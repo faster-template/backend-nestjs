@@ -6,6 +6,7 @@ import {
 import { CustomException } from './custom-exception';
 import { EErrorCode } from './exception.enum';
 import { FastifyError } from 'fastify';
+import { TypeORMError } from 'typeorm';
 
 interface ExceptionStrategy {
   handle(exception: any): CustomException;
@@ -71,11 +72,22 @@ class FastifyExceptionStrategy implements ExceptionStrategy {
   }
 }
 
+class TypeOrmExceptionStrategy implements ExceptionStrategy {
+  handle(): CustomException {
+    const customException = new CustomException({
+      message: '服务器开小差了，请刷新重试',
+      code: EErrorCode.SERVER_ERROR,
+    });
+    return customException;
+  }
+}
+
 export class ExceptionHandler {
   private static strategies: Record<string, ExceptionStrategy> = {
     UnauthorizedException: new UnauthorizedExceptionStrategy(),
     BadRequestException: new BadRequestExceptionStrategy(),
     FastifyError: new FastifyExceptionStrategy(),
+    QueryFailedError: new TypeOrmExceptionStrategy(),
   };
 
   static handle(exception: any): CustomException {
