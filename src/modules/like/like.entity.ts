@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { ELikeRelationType, ELikeState } from './like.enum';
+import { ELikeRelationType, ELikeType } from './like.enum';
 import { BaseWithCreatorEntity } from '@/core/entities/base.entity';
 
 @Entity('like')
@@ -11,5 +11,5 @@ export class LikeEntity extends BaseWithCreatorEntity {
   relationType: ELikeRelationType;
 
   @Column({ nullable: false })
-  likeState: ELikeState;
+  likeType: ELikeType;
 }
