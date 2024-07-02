@@ -20,14 +20,7 @@ export class CommentQueryDto {
   relationType: ECommentRelationType;
 }
 
-export class CommentCreateDto {
-  @IsNotEmpty()
-  relationId: string;
-
-  @IsNotEmpty()
-  @IsEnum(ECommentRelationType)
-  relationType: ECommentRelationType;
-
+export class CommentCreateDto extends PartialType(CommentQueryDto) {
   @IsNotEmpty()
   @Length(1, 200)
   @Transform(DOMPurifyTransform({ ALLOWED_TAGS: [] }))

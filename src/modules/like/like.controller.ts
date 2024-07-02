@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Query } from '@nestjs/common';
 import { LikeService } from './like.service';
-import { LikeAddDto, LikeQueryDto } from './like.dto';
+import { LikeAddDto, LikeDeleteDto, LikeQueryDto } from './like.dto';
 
 @Controller('like')
 export class LikeController {
@@ -12,8 +12,8 @@ export class LikeController {
   }
 
   @Post('delete')
-  delete(@Body('id') id: string) {
-    return this.likeService.delete(id);
+  delete(@Body() deleteDto: LikeDeleteDto) {
+    return this.likeService.delete(deleteDto);
   }
 
   @Post('getCount')

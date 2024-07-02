@@ -5,7 +5,12 @@ import { CommentService } from '../comment/comment.service';
 import { DataSource } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { ArticleService } from '../article/article.service';
-import { LikeAddDto, LikeCountViewDto, LikeQueryDto } from './like.dto';
+import {
+  LikeAddDto,
+  LikeCountViewDto,
+  LikeDeleteDto,
+  LikeQueryDto,
+} from './like.dto';
 import { ELikeType } from './like.enum';
 
 @Injectable()
@@ -43,9 +48,11 @@ export class LikeService {
     await this.likeRepository.save(likeEntity);
   }
 
-  async delete(id: string): Promise<void> {
-    if (!id) throw new NotFoundException('id不能为空');
-    const likeEntity = await this.likeRepository.findOne({ where: { id } });
+  async delete(deleteDto: LikeDeleteDto): Promise<void> {
+    const { relationId, relationType } = deleteDto;
+    const likeEntity = await this.likeRepository.findOne({
+      where: { relationId, relationType },
+    });
     if (likeEntity) {
       await this.likeRepository.remove(likeEntity);
     }

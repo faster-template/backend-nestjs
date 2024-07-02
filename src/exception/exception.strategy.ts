@@ -24,9 +24,10 @@ class UnauthorizedExceptionStrategy implements ExceptionStrategy {
 class BadRequestExceptionStrategy implements ExceptionStrategy {
   handle(exception: BadRequestException): CustomException {
     const rep = exception.getResponse() as object;
-
     const customException = new CustomException({
-      message: rep?.['message']?.[0] || '请求参数错误，请检查后重试',
+      message: Array.isArray(rep?.['message'])
+        ? rep?.['message']?.[0]
+        : '请求参数错误，请检查后重试',
       code: EErrorCode.CLIENT_ERROR,
     });
     return customException;
