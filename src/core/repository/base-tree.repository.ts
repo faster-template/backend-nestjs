@@ -8,6 +8,7 @@ import {
 import { TreeNodeDto } from '../dto/base-tree.dto';
 import { CustomException } from '@/exception/custom-exception';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { NotFoundException } from '@nestjs/common';
 
 const sortChild = <CustomEntity extends BaseTreeEntity<CustomEntity>>(
   sortedNodes: CustomEntity[],
@@ -38,7 +39,7 @@ export class BaseTreeRepository<
       where: {
         id,
       } as FindOptionsWhere<CustomEntity>,
-      relations: ['children'],
+      relations: ['children', 'creator'],
     });
     return node;
   }
@@ -52,7 +53,7 @@ export class BaseTreeRepository<
         createEntity['parent'] = parent;
         createEntity.sort = parent.children.length + 1;
       } else {
-        throw new CustomException({ message: '父分类不存在' });
+        throw new NotFoundException('上层内容不存在');
       }
     } else {
       const rootNodes = await this.findRoots({
@@ -79,10 +80,12 @@ export class BaseTreeRepository<
   async getChildren(id: string): Promise<CustomEntity[]> {
     const parent = await this.getNode(id);
     if (parent) {
-      const parentTree = await this.findDescendantsTree(parent);
+      const parentTree = await this.findDescendantsTree(parent, {
+        relations: ['creator'],
+      });
       return sortChild(parentTree.children) as CustomEntity[];
     } else {
-      throw new CustomException({ message: '分类不存在' });
+      throw new NotFoundException('上层内容不存在');
     }
   }
 
@@ -162,10 +165,10 @@ export class BaseTreeRepository<
           await queryRunner.release();
         }
       } else {
-        throw new CustomException({ message: '不属于同一层级' });
+        throw new CustomException({ message: '内容不属于同一层' });
       }
     } else {
-      throw new CustomException({ message: '元素不存在' });
+      throw new NotFoundException('内容不存在');
     }
   }
 }
