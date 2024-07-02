@@ -11,8 +11,8 @@ import { DraftModule } from '../draft/draft.module';
     DraftModule,
     TypeOrmModule.forFeature([ArticleEntity, BaseDefaultRepository]),
   ],
-
   controllers: [ArticleController],
   providers: [ArticleService],
+  exports: [ArticleService],
 })
 export class ArticleModule {}
