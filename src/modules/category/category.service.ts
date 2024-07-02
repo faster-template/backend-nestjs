@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto, UpdateCategoryDto } from './category.dto';
+import { CategoryCreateDto, CategoryUpdateDto } from './category.dto';
 import { CategoryEntity } from './category.entity';
 import { DataSource } from 'typeorm';
 import { CustomException } from '@/exception/custom-exception';
@@ -17,7 +17,7 @@ export class CategoryService {
   }
 
   // 创建分类
-  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryEntity> {
+  async create(createCategoryDto: CategoryCreateDto): Promise<CategoryEntity> {
     return this.categoryRepository.createNode(createCategoryDto);
   }
 
@@ -46,7 +46,7 @@ export class CategoryService {
   }
 
   // 更新一个分类
-  update(updateCategoryDto: UpdateCategoryDto) {
+  update(updateCategoryDto: CategoryUpdateDto) {
     return this.categoryRepository.update(
       updateCategoryDto.id,
       updateCategoryDto,

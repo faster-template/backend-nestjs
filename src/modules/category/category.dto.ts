@@ -7,7 +7,7 @@ import {
   Length,
 } from 'class-validator';
 
-export class CreateCategoryDto {
+export class CategoryCreateDto {
   @IsString()
   @IsNotEmpty()
   @Length(1, 20)
@@ -25,18 +25,18 @@ export class CreateCategoryDto {
   @IsNumber()
   sort: number;
 }
-export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
+export class CategoryUpdateDto extends PartialType(CategoryCreateDto) {
   @IsNotEmpty()
   id: string;
 }
 
-export class ViewCategoryDto {
+export class CategoryViewDto {
   id: string;
   name: string;
   key: string;
   description: string;
   parentId?: string | null;
-  children?: ViewCategoryDto[] | null;
+  children?: CategoryViewDto[] | null;
   sort: number;
 }
 

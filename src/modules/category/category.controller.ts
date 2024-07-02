@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import {
-  CreateCategoryDto,
+  CategoryCreateDto,
   CategorySortDto,
-  UpdateCategoryDto,
+  CategoryUpdateDto,
 } from './category.dto';
 
 @Controller('category')
@@ -11,7 +11,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post('create')
-  create(@Body() createCategoryDto: CreateCategoryDto) {
+  create(@Body() createCategoryDto: CategoryCreateDto) {
     return this.categoryService.create(createCategoryDto);
   }
 
@@ -31,7 +31,7 @@ export class CategoryController {
   }
 
   @Post('update')
-  update(@Body() updateCategoryDto: UpdateCategoryDto) {
+  update(@Body() updateCategoryDto: CategoryUpdateDto) {
     return this.categoryService.update(updateCategoryDto);
   }
 
