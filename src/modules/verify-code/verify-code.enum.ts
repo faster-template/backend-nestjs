@@ -1,0 +1,6 @@
+export enum EVerifyCodeType {
+  REGISTER = 'REGISTER',
+  LOGIN = 'LOGIN',
+  FORGET_PASSWORD = 'FORGET_PASSWORD',
+  CHANGE_MOBILE = 'CHANGE_MOBILE',
+}
