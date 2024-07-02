@@ -3,7 +3,7 @@ import { PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 
-export class CreateArticleDto {
+export class ArticleCreateDto {
   @IsNotEmpty()
   @Length(5, 30)
   title: string;
@@ -18,7 +18,7 @@ export class CreateArticleDto {
   creatorId?: string;
 }
 
-export class UpdateArticleDto extends PartialType(CreateArticleDto) {
+export class ArticleUpdateDto extends PartialType(ArticleCreateDto) {
   @IsOptional()
   @Length(36)
   @IsString()

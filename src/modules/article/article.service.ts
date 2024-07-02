@@ -8,7 +8,7 @@ import {
 import { EState } from '@/core/enums';
 import { REQUEST } from '@nestjs/core';
 import { DataSource, SelectQueryBuilder } from 'typeorm';
-import { UpdateArticleDto } from './article.dto';
+import { ArticleUpdateDto } from './article.dto';
 import { DraftService } from '../draft/draft.service';
 import { EDraftType, EResourceType } from '../draft/draft.enum';
 import { CustomException } from '@/exception/custom-exception';
@@ -111,9 +111,9 @@ export class ArticleService {
    * @returns
    */
   async save(
-    article: UpdateArticleDto,
+    article: ArticleUpdateDto,
     state: EState = EState.Draft,
-  ): Promise<UpdateArticleDto> {
+  ): Promise<ArticleUpdateDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     try {

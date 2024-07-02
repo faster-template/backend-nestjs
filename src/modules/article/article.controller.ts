@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { UpdateArticleDto } from './article.dto';
+import { ArticleUpdateDto } from './article.dto';
 import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
 import { EState } from '@/core/enums';
@@ -16,7 +16,7 @@ export class ArticleController {
 
   @Post('save')
   @Roles(EUserRole.SuperAdmin)
-  save(@Body() UpdateArticleDto: UpdateArticleDto) {
+  save(@Body() UpdateArticleDto: ArticleUpdateDto) {
     return this.articleService.save(UpdateArticleDto, EState.Normal);
   }
 
@@ -59,7 +59,7 @@ export class ArticleController {
 
   @Post('saveAsDraft')
   @Roles(EUserRole.SuperAdmin)
-  saveAsDraft(@Body() updateArticleDto: UpdateArticleDto) {
+  saveAsDraft(@Body() updateArticleDto: ArticleUpdateDto) {
     return this.articleService.save(updateArticleDto);
   }
 
