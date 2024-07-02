@@ -10,7 +10,7 @@ export class ArticleCreateDto {
 
   @Length(5, 8000)
   @IsNotEmpty()
-  @Transform(DOMPurifyTransform)
+  @Transform(DOMPurifyTransform())
   content: string;
 
   @IsNotEmpty()
