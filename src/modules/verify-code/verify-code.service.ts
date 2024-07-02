@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CryptoUtil } from '@/utils/crypto.util';
 import { CustomException } from '@/exception/custom-exception';
 import { ConfigService } from '@nestjs/config';
-import { CreateVerifyCodeDto, VerifyCodeDto } from './verify-code.dto';
+import { VerifyCodeCreateDto, VerifyCodeValidDto } from './verify-code.dto';
 
 @Injectable()
 export class VerifyCodeService {
@@ -19,7 +19,7 @@ export class VerifyCodeService {
   // 验证码发送间隔时间
   private limitInterval = 1 * 60 * 1000;
 
-  async create(data: CreateVerifyCodeDto): Promise<void> {
+  async create(data: VerifyCodeCreateDto): Promise<void> {
     const { phone, type } = data;
     if (!phone || !type) {
       throw new CustomException('手机号不能为空');
@@ -48,7 +48,7 @@ export class VerifyCodeService {
     await this.verifyCodeRepository.save(verifyCode);
   }
 
-  async verify(data: VerifyCodeDto): Promise<boolean> {
+  async verify(data: VerifyCodeValidDto): Promise<boolean> {
     const { phone, type, code } = data;
     if (!phone || !code || !type) {
       throw new CustomException('手机号或验证码不能为空');

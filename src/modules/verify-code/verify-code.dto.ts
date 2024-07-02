@@ -1,7 +1,7 @@
 import { IsString, Length } from 'class-validator';
 import { EVerifyCodeType } from './verify-code.enum';
 
-export class CreateVerifyCodeDto {
+export class VerifyCodeCreateDto {
   @Length(11)
   @IsString()
   phone: string;
@@ -10,7 +10,7 @@ export class CreateVerifyCodeDto {
   type: EVerifyCodeType;
 }
 
-export class VerifyCodeDto extends CreateVerifyCodeDto {
+export class VerifyCodeValidDto extends VerifyCodeCreateDto {
   @Length(6)
   @IsString()
   code: string;
