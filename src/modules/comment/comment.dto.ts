@@ -1,5 +1,5 @@
 import { DOMPurifyTransform } from '@/decorators/DOMPurify.transform.decorator';
-import { PartialType } from '@nestjs/swagger';
+import { OmitType, PartialType } from '@nestjs/swagger';
 import {
   IsEnum,
   IsNotEmpty,
@@ -8,7 +8,9 @@ import {
   Length,
 } from 'class-validator';
 import { ECommentRelationType } from './comment.enum';
-import { Transform } from 'class-transformer';
+import { Type, Expose, Transform } from 'class-transformer';
+import { UserInfoDto } from '../user/user.dto';
+
 export class CommentQueryDto {
   @IsNotEmpty()
   relationId: string;
@@ -28,3 +30,33 @@ export class CommentCreateDto extends PartialType(CommentQueryDto) {
   @IsString()
   parentId?: string | null;
 }
+
+export class CommentViewDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  content: string;
+
+  @Expose()
+  createTime: Date;
+
+  @Expose()
+  @Type(() => UserInfoDto)
+  creator: UserInfoDto;
+
+  @Expose()
+  @Type(() => CommentViewDto)
+  children: CommentViewDto[];
+}
+
+export class CommentListViewDto {
+  @Expose()
+  list: CommentViewDto[];
+  @Expose()
+  total: number;
+}
+
+export class CommentCreateSuccessViewDto extends OmitType(CommentViewDto, [
+  'children',
+]) {}

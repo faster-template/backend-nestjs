@@ -3,10 +3,18 @@ import { CommentEntity } from './comment.entity';
 import { DataSource } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { BaseTreeRepository } from '@/core/repository/base-tree.repository';
-import { CommentCreateDto, CommentQueryDto } from './comment.dto';
+import {
+  CommentCreateDto,
+  CommentCreateSuccessViewDto,
+  CommentListViewDto,
+  CommentQueryDto,
+  CommentViewDto,
+} from './comment.dto';
 import { IPayload } from '../user-auth/user-auth.interface';
 import { ECommentRelationType } from './comment.enum';
 import { ArticleService } from '../article/article.service';
+import { plainToClass } from 'class-transformer';
+import { EState } from '@/core/enums';
 
 @Injectable()
 export class CommentService {
@@ -23,7 +31,9 @@ export class CommentService {
     );
   }
 
-  async create(comment: CommentCreateDto): Promise<void> {
+  async create(
+    comment: CommentCreateDto,
+  ): Promise<CommentCreateSuccessViewDto> {
     const { relationId, relationType } = comment;
     const user = this.request['user'] as IPayload;
 
@@ -41,10 +51,11 @@ export class CommentService {
       throw new NotFoundException('未找到评论内容');
     }
 
-    await this.commentRepository.createNode({
+    const result = await this.commentRepository.createNode({
       ...comment,
-      createId: user.id,
+      creatorId: user.id,
     });
+    return result.Mapper(CommentCreateSuccessViewDto);
   }
 
   async delete(id: string): Promise<void> {
@@ -52,15 +63,36 @@ export class CommentService {
     const comment = await this.commentRepository.findOne({ where: { id } });
     if (!comment) throw new NotFoundException('评论不存在');
     const childrens = await this.commentRepository.findDescendants(comment);
-    this.commentRepository.remove([...childrens, comment]);
+    if (childrens.length > 0) {
+      comment.state = EState.SoftDeleted;
+      comment.content = '评论已被删除';
+      await this.commentRepository.save(comment);
+    } else {
+      await this.commentRepository.remove(comment);
+    }
   }
 
-  async getList(commentQueryDto: CommentQueryDto) {
+  async getList(commentQueryDto: CommentQueryDto): Promise<CommentListViewDto> {
     const { relationId, relationType } = commentQueryDto;
-    const comments = await this.commentRepository.find({
-      where: { relationId, relationType, parent: null },
-      relations: ['children'],
+    const [comments, total] = await this.commentRepository.findAndCount({
+      where: { relationId, relationType },
+      relations: ['parent'],
     });
-    return comments;
+    const rootComments = comments.filter((t) => t.parent == null);
+
+    const result = (await Promise.all(
+      rootComments.map(async (comment) => {
+        return this.commentRepository.findDescendantsTree(comment, {
+          relations: ['creator'],
+        });
+      }),
+    )) as unknown as CommentEntity[];
+    return {
+      list: plainToClass(CommentViewDto, result, {
+        strategy: 'excludeAll',
+        excludeExtraneousValues: true,
+      }),
+      total,
+    };
   }
 }
