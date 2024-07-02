@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { ELikeRelationType, ELikeType } from './like.enum';
-import { PartialType } from '@nestjs/swagger';
+import { PartialType, PickType } from '@nestjs/swagger';
 export class LikeAddDto {
   @IsNotEmpty()
   relationId: string;
@@ -14,4 +14,15 @@ export class LikeAddDto {
   likeType: ELikeType;
 }
 
+export class LikeQueryDto extends PickType(LikeAddDto, [
+  'relationId',
+  'relationType',
+]) {}
+
 export class LikeDelDto extends PartialType(LikeAddDto) {}
+
+export class LikeCountViewDto {
+  likeCount: number;
+  dislikeCount: number;
+  myLikeType: ELikeType | null;
+}

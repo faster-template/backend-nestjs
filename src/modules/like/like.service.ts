@@ -5,7 +5,8 @@ import { CommentService } from '../comment/comment.service';
 import { DataSource } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { ArticleService } from '../article/article.service';
-import { LikeAddDto } from './like.dto';
+import { LikeAddDto, LikeCountViewDto, LikeQueryDto } from './like.dto';
+import { ELikeType } from './like.enum';
 
 @Injectable()
 export class LikeService {
@@ -48,5 +49,21 @@ export class LikeService {
     if (likeEntity) {
       await this.likeRepository.remove(likeEntity);
     }
+  }
+
+  async getCount(LikeQueryDto: LikeQueryDto): Promise<LikeCountViewDto> {
+    const { relationId, relationType } = LikeQueryDto;
+    const [allLikeEntities, total] = await this.likeRepository.findAndCount({
+      where: { relationId, relationType },
+    });
+    const Likes = allLikeEntities.filter((t) => t.likeType === ELikeType.Like);
+    const myLike = allLikeEntities.find(
+      (t) => t.creatorId == this.request['user'].id,
+    );
+    return {
+      likeCount: Likes.length,
+      dislikeCount: total - Likes.length,
+      myLikeType: myLike ? myLike.likeType : null,
+    };
   }
 }
