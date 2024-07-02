@@ -1,6 +1,6 @@
 import { EDraftType, EResourceType } from './draft.enum';
 
-export class CreateDraftDto {
+export class DraftCreateDto {
   resourceType: EResourceType;
   resourceId: string;
   contentJson: string;

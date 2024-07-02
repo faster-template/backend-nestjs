@@ -1,6 +1,6 @@
 import { BaseDefaultRepository } from '@/core/repository/base.repository';
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateDraftDto } from './draft.dto';
+import { DraftCreateDto } from './draft.dto';
 import { DraftEntity } from './draft.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -23,7 +23,7 @@ export class DraftService {
   }
 
   // 创建一条草稿
-  async create(createDraftDto: CreateDraftDto) {
+  async create(createDraftDto: DraftCreateDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     try {
@@ -39,7 +39,7 @@ export class DraftService {
 
   // 创建一条草稿
   async createWithTransaction(
-    createDraftDto: CreateDraftDto,
+    createDraftDto: DraftCreateDto,
     queryRunner: QueryRunner,
   ) {
     const _repository = queryRunner.manager.getRepository(DraftEntity);
