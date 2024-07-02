@@ -19,6 +19,8 @@ export class CsrfInterceptor implements NestInterceptor {
     if (isLoginUrl) {
       CSRF_DATA[process.env.CSRF_KEY] = response.generateCsrf();
     }
-    return next.handle().pipe(map((data) => ({ ...data, ...CSRF_DATA })));
+    return next
+      .handle()
+      .pipe(map((data) => (isLoginUrl ? { ...data, ...CSRF_DATA } : data)));
   }
 }
