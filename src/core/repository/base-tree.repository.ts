@@ -43,13 +43,11 @@ export class BaseTreeRepository<
     return node;
   }
   // 创建分类
-  async createNode<CreateDto extends TreeNodeDto>(
-    createCategoryDto: CreateDto,
-  ) {
+  async createNode<CreateDto extends TreeNodeDto>(createDto: CreateDto) {
     const createEntity = {} as CustomEntity;
-    Object.assign(createEntity, createCategoryDto);
-    if (createCategoryDto.parentId) {
-      const parent = await this.getNode(createCategoryDto.parentId);
+    Object.assign(createEntity, createDto);
+    if (createDto.parentId) {
+      const parent = await this.getNode(createDto.parentId);
       if (parent) {
         createEntity['parent'] = parent;
         createEntity.sort = parent.children.length + 1;
@@ -133,8 +131,8 @@ export class BaseTreeRepository<
           qb.andWhere(`${this.alias}.sort < :maxSort`, {
             maxSort: Math.max(source.sort, target.sort),
           });
-          const willSortCategorys = await qb.getMany();
-          willSortCategorys.forEach((item) => {
+          const willSortEntities = await qb.getMany();
+          willSortEntities.forEach((item) => {
             item.sort = isUp ? item.sort + 1 : item.sort - 1;
           });
           const targetSort = Number(target.sort.toString());
@@ -146,7 +144,7 @@ export class BaseTreeRepository<
             target.sort = isUnderTarget ? target.sort - 1 : target.sort;
           }
           source.sort = target.sort + position;
-          for (const item of [...willSortCategorys, source, target]) {
+          for (const item of [...willSortEntities, source, target]) {
             await _repository
               .createQueryBuilder()
               .update(this.entity)
