@@ -98,7 +98,7 @@ export class ExceptionHandler {
       return strategy.handle(exception);
     }
     return new CustomException({
-      message: exception.message || '服务器开小差了',
+      message: '服务器开小差了',
       code: EErrorCode.SERVER_ERROR,
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       manual: false,
