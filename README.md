@@ -23,9 +23,9 @@
 如果你只是个人的小型项目使用，如公众号文章推送，或者自己的博客社区，这个应该能够完全cover住。
 
 ## 使用
-+ [配置及文档](./DOC.md)
-+ [前端项目 - 正在写文档中，稍后见]()
-+ [项目学习记录：掘金专栏-一个NestJS的后端从0到1](https://juejin.cn/column/7375072812847644682)
++ [开发文档](./DOC.md)
++ [前端项目-faster-template-frontend-admin-with-arco](https://github.com/heifengli001/faster-template-frontend-admin-with-arco)
++ [项目学习记录：掘金专栏-一个NestJS的后端从0到1，共11篇文章](https://juejin.cn/column/7375072812847644682)
 
 ## 已有功能
 + 基础能力
@@ -38,15 +38,19 @@
       + @fastify/csrf-protection
       + @fastify/cookie
     + cors
-  + 全局错误
+  + 全局异常处理
     + 自定义异常
     + 拦截及异常捕获处理 
     + 特定异常处理转换
   + 统一输出格式
+    + 使用 ResponseInterceptor + Filter 实现
   + 日志
     + Winston
   + Crypto加密及解密
+    + 密码加密及校验
     + 手机号脱敏及加密
+  + 定时器
+    + 过期验证码定时清理
 + 实体基类
   + 基类定义
     + 普通基类
@@ -57,7 +61,7 @@
     + 树节点创建
     + 树子类查询
     + 树根查询
-    + 树形排序
+    + 树排序
 + 基础功能
   + 登录授权(JWT)
     + 微信
@@ -75,9 +79,14 @@
   + 树形结构分类(Category)
   + 富文本文章(Article)
   + 素材管理(Material)
+  + 评论模块(Comment)
+    + 评论为树形结构(继承自树形基类)
+  + 点赞模块(Like)
 + 插件/配置
-  + 初始生成默认超管用密
-  + 默认启动swagger文档
+  + 初始生成默认超管用密(仅开发环境)
+  + 默认启动swagger文档(仅开发环境)
+  + 全局验证器(ValidationPipe)
+  + FormData处理(fastifyMultipart)
   
 ## 文件结构
 
@@ -100,8 +109,15 @@
 |app.module.ts # 根module
 ```
 
+## 接口文档及调测
++ swagger: 
+  + 开发启动在 {local-service}/api
+  + api-json在 {local-service}/api-json
++ ApiFox : https://apifox.com/apidoc/shared-3a33fc33-9bf0-4554-a6ad-5d4b7c22650c
+
 
 ## 在线Demo
+> 等前端项目完成，部署后见
 + 地址：
 + 用户名：
 + 密码：
@@ -111,8 +127,7 @@
 ### 问题
 + 未对多语言国际化支持
 + 短信未对接
-+ 用户注销未实现
-+ TS支持深度不够
++ TS深度使用
 
 ### TODO
 + 深度使用TypeScript对项目进行优化
