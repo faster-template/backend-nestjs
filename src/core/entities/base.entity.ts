@@ -1,4 +1,5 @@
 import { EState } from '@/core/enums';
+import { IPayload } from '@/modules/user-auth/user-auth.interface';
 import { UserEntity } from '@/modules/user/user.entity';
 import {
   ClassConstructor,
@@ -48,4 +49,8 @@ export abstract class BaseWithCreatorEntity extends BaseDefaultEntity {
   creator: UserEntity;
   @Column({ nullable: true })
   creatorId: string;
+
+  isCreator(user: IPayload) {
+    return user.id == this.creatorId;
+  }
 }
