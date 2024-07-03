@@ -44,7 +44,7 @@ export class MaterialService {
 
   async getList(
     pagination: PaginationDto,
-  ): Promise<PaginationResult<MaterialEntity>> {
+  ): Promise<PaginationResult<MaterialViewDto>> {
     const result = (await this.materialRepository.paginate(
       pagination,
     )) as PaginationResult<MaterialEntity>;
