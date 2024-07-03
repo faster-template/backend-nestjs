@@ -38,7 +38,12 @@ export class UploadService {
     ) {
       fileBuff = await resizeImage(fileBuff, option.resize, option.quality);
     }
-    const filename = `${option.fileName || (option.fileNameRandom ? Math.random().toString(36).slice(2) : file.filename.slice(0, file.filename.lastIndexOf('.')))}${file.filename.slice(file.filename.lastIndexOf('.'))}`;
+    const sourceFileName = file.filename.slice(
+      0,
+      file.filename.lastIndexOf('.'),
+    );
+    const sourceFileExt = file.filename.slice(file.filename.lastIndexOf('.'));
+    const filename = `${option.fileName || (option.fileNameRandom ? Math.random().toString(36).slice(2) : sourceFileName)}${sourceFileExt}`;
 
     // 无需关心具体的Oss，直接从ossServicehandler处理，根据请求配置
     const ossService = this.ossService.handler(option.oss || EOssType.QINIU);
@@ -52,6 +57,8 @@ export class UploadService {
 
     await this.materialService.create({
       ossType: option.oss || EOssType.QINIU,
+      folder: option.folderPath || '/',
+      name: filename || sourceFileName,
       path: uploadResult.path,
       type: this.materialService.getTypeByMime(file.mimetype),
     });

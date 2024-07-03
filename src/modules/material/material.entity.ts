@@ -20,6 +20,12 @@ export class MaterialEntity extends BaseWithCreatorEntity {
   })
   ossType: EOssType;
 
+  @Column({ type: 'varchar', default: '', nullable: true, length: 100 })
+  name: string;
+
+  @Column({ type: 'varchar', default: '', nullable: true, length: 100 })
+  folder: string;
+
   @Column({ type: 'varchar', default: '', nullable: false })
   path: string;
 }

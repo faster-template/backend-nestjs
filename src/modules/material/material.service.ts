@@ -1,7 +1,7 @@
 import { OssService } from './../upload/oss/oss.service';
 import { DataSource } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { MaterialCreateDto } from './material.dto';
+import { MaterialCreateDto, MaterialViewDto } from './material.dto';
 import {
   BaseDefaultRepository,
   PaginationDto,
@@ -10,7 +10,7 @@ import {
 import { MaterialEntity } from './material.entity';
 import { REQUEST } from '@nestjs/core';
 import { EMaterialType } from './material.enum';
-
+import { plainToClass } from 'class-transformer';
 @Injectable()
 export class MaterialService {
   private materialRepository: BaseDefaultRepository<MaterialEntity>;
@@ -51,7 +51,13 @@ export class MaterialService {
     result.items.forEach((item) => {
       item.path = `${this.ossService.getDomain(item.ossType)}/${item.path}`;
     });
-    return result;
+    return {
+      total: result.total,
+      items: plainToClass(MaterialViewDto, result.items, {
+        strategy: 'excludeAll',
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   // 这里需要根据mimetype来判断类型
