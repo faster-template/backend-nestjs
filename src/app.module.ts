@@ -45,7 +45,7 @@ import { MaterialModule } from './modules/material/material.module';
     // 配置环境变量
     ConfigModule.forRoot({
       isGlobal: true,
-      // envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
     CacheModule.register({
       isGlobal: true,
