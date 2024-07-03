@@ -46,6 +46,30 @@ export class ArticleController {
     return this.articleService.getList(pagination, true);
   }
 
+  @Get('list')
+  getArticleList(
+    @Pagination() pagination: PaginationDto,
+    @Query('title') title: string,
+    @Query('categoryId') categoryId: string,
+  ) {
+    pagination.where = [
+      {
+        field: 'title',
+        value: title ? `%${title}%` : null,
+        operator: EWhereOperator.Like,
+      },
+      {
+        field: 'state',
+        value: EState.Normal,
+      },
+      {
+        field: 'categoryId',
+        value: categoryId,
+      },
+    ];
+    return this.articleService.getList(pagination, false);
+  }
+
   @Get('getDetail')
   findOne(@Query('id') id: string) {
     return this.articleService.findOne(id);

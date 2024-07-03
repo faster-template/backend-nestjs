@@ -91,7 +91,15 @@ export class ArticleService {
   }
   // 获取草稿列表
   async getDraftList(id: string): Promise<DraftEntity[]> {
-    return this.draftService.findDrafts(EResourceType.ARTICLE, id);
+    const article = await this.findOne(id);
+    if (
+      article &&
+      (article.isCreator(this.request['user']) || this.request['user'].isAdmin)
+    ) {
+      return this.draftService.findDrafts(EResourceType.ARTICLE, id);
+    } else {
+      throw new NotFoundException('未找到资源');
+    }
   }
 
   // 修改文章状态

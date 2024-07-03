@@ -3,6 +3,8 @@ import { UploadOption, UploadService } from './upload.service';
 import { FastifyRequest } from 'fastify';
 import { string2Enum } from '@/utils';
 import { EOssType } from '../material/material.enum';
+import { Roles } from '../user-role/user-role.decorator';
+import { EUserRole } from '../user-role/user-role.enum';
 
 @Controller('upload')
 export class UploadController {
@@ -20,6 +22,7 @@ export class UploadController {
   }
 
   @Post('files')
+  @Roles(EUserRole.SuperAdmin)
   async uploadFiles(@Req() req: FastifyRequest) {
     const files = Object.values(req.body).filter(
       (item) => item.type === 'file',
