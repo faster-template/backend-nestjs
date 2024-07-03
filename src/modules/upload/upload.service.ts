@@ -6,6 +6,7 @@ import { MultipartFile } from '@fastify/multipart';
 import { EOssType } from '../material/material.enum';
 import { OssService, OssUploadResult } from './oss/oss.service';
 import { ConfigService } from '@nestjs/config';
+import { CustomException } from '@/exception/custom-exception';
 
 export interface UploadOption {
   resize?: null | ResizeOptions; // 是否修改图片尺寸
@@ -31,6 +32,9 @@ export class UploadService {
     // 尝试压缩图片
     // 判断是否是图片
     let fileBuff: Buffer = await file.toBuffer();
+    if (!limitFileMimeTypes.includes(file.mimetype)) {
+      throw new CustomException('不支持的文件类型');
+    }
     if (
       file.mimetype.startsWith('image/') &&
       option &&
@@ -76,3 +80,26 @@ export class UploadService {
     return Promise.all(asyncQueue).then((urls) => urls);
   }
 }
+
+const limitFileMimeTypes = [
+  // 图片
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/bmp',
+  'image/webp',
+  // 视频
+  'video/mp4',
+  'video/x-flv',
+  'video/ogg',
+  'video/webm',
+  // 音频
+  'audio/mpeg',
+  'audio/ogg',
+  // 文档
+  'application/msword',
+  'application/vnd.ms-excel',
+  'application/vnd.ms-powerpoint',
+  'application/pdf',
+  'text/plain',
+];
