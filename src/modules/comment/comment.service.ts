@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommentEntity } from './comment.entity';
 import { DataSource } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
@@ -62,6 +67,12 @@ export class CommentService {
     if (!id) throw new NotFoundException('评论id不能为空');
     const comment = await this.commentRepository.findOne({ where: { id } });
     if (!comment) throw new NotFoundException('评论不存在');
+    if (
+      !comment.isCreator(this.request['user']) &&
+      !this.request['user'].isAdmin
+    ) {
+      throw new ForbiddenException('不能删除其他人的评论');
+    }
     const childrens = await this.commentRepository.findDescendants(comment);
     if (childrens.length > 0) {
       comment.state = EState.SoftDeleted;
@@ -71,12 +82,11 @@ export class CommentService {
       await this.commentRepository.remove(comment);
     }
   }
-
   async getList(commentQueryDto: CommentQueryDto): Promise<CommentListViewDto> {
     const { relationId, relationType } = commentQueryDto;
     const [comments, total] = await this.commentRepository.findAndCount({
       where: { relationId, relationType },
-      relations: ['parent'],
+      relations: ['parent', 'creator'],
     });
     const rootComments = comments.filter((t) => t.parent == null);
 
@@ -88,7 +98,7 @@ export class CommentService {
       }),
     )) as unknown as CommentEntity[];
     return {
-      list: plainToClass(CommentViewDto, result, {
+      items: plainToClass(CommentViewDto, result, {
         strategy: 'excludeAll',
         excludeExtraneousValues: true,
       }),

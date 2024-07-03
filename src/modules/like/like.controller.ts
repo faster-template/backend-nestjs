@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { LikeAddDto, LikeDeleteDto, LikeQueryDto } from './like.dto';
 
@@ -16,7 +16,7 @@ export class LikeController {
     return this.likeService.delete(deleteDto);
   }
 
-  @Post('getCount')
+  @Get('getCount')
   getCount(@Query() likeQueryDto: LikeQueryDto) {
     return this.likeService.getCount(likeQueryDto);
   }

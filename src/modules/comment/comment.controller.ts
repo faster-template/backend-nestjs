@@ -13,7 +13,7 @@ export class CommentController {
   }
 
   @Post('delete')
-  delete(@Body() id: string) {
+  delete(@Query() id: string) {
     return this.commentService.delete(id);
   }
 

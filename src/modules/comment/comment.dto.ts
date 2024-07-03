@@ -52,7 +52,7 @@ export class CommentViewDto {
 
 export class CommentListViewDto {
   @Expose()
-  list: CommentViewDto[];
+  items: CommentViewDto[];
   @Expose()
   total: number;
 }
