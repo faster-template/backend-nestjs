@@ -1,14 +1,16 @@
 #!/bin/bash
 echo ""
+
+whoami
 #输出当前时间
 date --date='0 days ago' "+%Y-%m-%d %H:%M:%S"
 echo "Start"
 #git分支名称
 branch="main"
-#git项目将在服务器的物理路径
-gitPath="/www/wwwroot/xxxx你的路径"
+#git项目路径
+gitPath="/www/wwwroot/faster-template/nestjs"
 #git 仓库地址
-gitHttp="你的仓库地址"
+gitHttp="git@gitee.com:yksgit/faster-template-backend-with-nestjs.git"
 
 echo "Web站点路径：$gitPath"
 #判断项目路径是否存在
@@ -30,7 +32,7 @@ if [ -d "$gitPath" ]; then
     echo "设置目录权限"
     sudo chown -R www:www $gitPath
     echo "End"
-    exit
+    
 else
     echo "该项目路径不存在"
     echo "新建项目目录"
@@ -44,9 +46,29 @@ else
         sudo rm -rf gittemp
     fi
     echo "拉取最新的项目文件"
+    #sudo git reset --hard origin/$branch
     sudo git pull gitHttp 2>&1
     echo "设置目录权限"
     sudo chown -R www:www $gitPath
     echo "End"
-    exit
+
+    
 fi
+
+echo "复制生产环境变量"
+
+gitPath="/www/wwwroot/faster-template/nestjs"
+proEnvPath="/www/wwwroot/configs/faster-template/nestjs"
+/bin/cp -rf  $proEnvPath/.env.production $gitPath
+
+echo "删除dist目录"
+rm -rf $gitPath/dist
+
+echo "杀掉进程"
+
+echo "执行编译及启动"
+
+
+sudo npm run build
+
+exit
