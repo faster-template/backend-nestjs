@@ -2,8 +2,6 @@
 
 echo "1.寻找node dist/main服务，并杀掉"
 pids=$(ps aux | grep 'node dist/main' | grep -v grep | awk '{print $2}')
-
-
 # Kill each process
 for pid in $pids
 do
@@ -25,9 +23,7 @@ echo "2.进入项目目录: $projectPath"
 cd $projectPath
 
 echo "3.临时设置环境变量"
-
 export PATH=$PATH:$nodePath
-
 echo "新的环境变量：$PATH"
 
 echo "4.复制生产环境变量到项目下"

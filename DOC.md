@@ -90,7 +90,11 @@ $ npm run dev
 # 生产模式运行
 $ npm run start:prod
 ```
+## 部署到服务器
 
+参考文章：[【NestJS应用从0到1】11.部署及git-hook自动部署](https://juejin.cn/post/7387291151735275529)
+
+如果你也刚好是使用webhook自动部署，在deploy文件夹下已经准备好了`webhook脚本`以及`服务重启`脚本
 ## 需要注意
 
 最需要注意的是数据库配置
