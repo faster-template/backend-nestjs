@@ -129,11 +129,9 @@ export class ArticleService {
       const _repository = queryRunner.manager.getRepository(ArticleEntity);
       const articleEntity = _repository.create(article);
       articleEntity.state = state;
-
       if (!article.id) {
         // 从article中移除id
-        Reflect.deleteProperty(article, 'id');
-
+        Reflect.deleteProperty(articleEntity, 'id');
         articleEntity.creatorId = this.request['user'].id;
         article = await _repository.save(articleEntity);
       } else {
@@ -158,6 +156,7 @@ export class ArticleService {
       return article;
     } catch (err) {
       await queryRunner.rollbackTransaction();
+      throw err;
     } finally {
       await queryRunner.release();
     }
@@ -181,6 +180,7 @@ export class ArticleService {
           await queryRunner.commitTransaction();
         } catch (err) {
           await queryRunner.rollbackTransaction();
+          throw err;
         } finally {
           await queryRunner.release();
         }

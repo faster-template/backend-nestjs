@@ -74,6 +74,7 @@ export default {
       // 由于发生错误，让我们回滚所做的更改
       console.log('init-db ERROR:', err);
       await queryRunner.rollbackTransaction();
+      throw err;
     } finally {
       // 您需要释放手动创建的查询运行器：
       await queryRunner.release();
