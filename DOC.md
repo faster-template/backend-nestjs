@@ -1,46 +1,22 @@
 
 ## 安装
-
-```bash
-$ git clone 这个仓库
+复制该仓库
++ https:
+``` bash | zsh
+$ git clone https://github.com/heifengli001/faster-template-backend-with-nestjs.git
+```
++ ssh:
+``` bash | zsh
+$ git clone git@github.com:heifengli001/faster-template-backend-with-nestjs.git
 ```
 
 ## 配置环境变量
 在项目上建立环境变量.env
+在项目目录已准备好模板[./.env.template](.env.template)
+
 + 开发环境使用.env.development
 + 生产环境使用.env.production
 
-```
-# ----------------------↓ 微信配置 ↓-----------------------------
-WECHAT_APP_ID = 
-WECHAT_APP_SECRET = 
-
-# ----------------------↓ JWT 的秘钥 ↓----------------------
-JWT_SECRET = 
- 
-# ----------------------↓ 以下为数据库的配置 ↓--------------------
-DB_HOST=
-DB_PORT=3306
-DB_USERNAME=
-DB_PASSWORD=
-DB_DATABASE=
-
-# ----------------------↓ 统一的加密Key和IV ↓----------------------
-# ---------------------- 一经使用，请勿修改   ----------------------
-CRYPTO_KEY=12345678901234567890123456789012 # 32位
-CRYPTO_IV=1234567890123456 # 16位
-
-# ----------------------↓ 草稿箱配置 ↓-----------------------
-DRAFT_LIMIT=10 # 每个关联数据在草稿箱的最大数量
-
-# ----------------------↓ OSS  配置  ↓----------------------
-# OSS 配置请保持 OSS_{OSS_NAME}_XXX 格式，详见 oss.qiniu.service.ts 使用
-# ----------------------↓ OSS qiniu  ↓----------------------
-OSS_QINIU_AK= 
-OSS_QINIU_SK=
-OSS_QINIU_BUCKET=
-OSS_QINIU_DOMAIN= 
-```
 
 ## 准备
 这个开发模板基本上是开箱即用，但是你还是需要做一定的准备工作,这些是一些基础的配置性工作，将一些基础功能配置项在环境变量中完善以便能够顺利的跑起来
@@ -52,23 +28,29 @@ OSS_QINIU_DOMAIN=
 + `CRYPTO秘钥及变量` - `一经使用请勿修改`
    - CRYPTO_IV 变量仅在进行`非密码内容`加密及脱敏使用，密码的IVSalt会为每个加密内容随机生成。[源码](./src/utils/crypto.util.ts)
 
-## 默认配置项
-项目根目录下 `./configs`下存放着功能配置
-+ `./mysql.config.ts` 为Mysql的配置，但其服务器配置来自环境变量
-+ `./winston.config.ts` 为Winston日志配置，如日志存放位置，日志记录等级，格式化等
+## 运行
+> 项目包管理器使用 `npm`
 
-## 第一次运行
++ 安装依赖
+```
+npm run install
+```
++ 本地运行
+> 项目默认运行在`端口：3000`上
+```
+npm run dev
+```
+
+### 第一次运行
 
 如果你的一切准备好后，你可以按照下方运行`npm run dev`命令在本地跑起来
-### 默认的超管用户名及密码
+#### 默认的超管用户名及密码
 【开发环境下】第一次跑该项目，项目会检测你的数据库是否有用户，如果没有则会随机生成一个管理员账户
 你可以在`命令行中看到随机的用户名及密码`，或者在`项目的根目录 _init.txt 中找到`
 
-## 开发环境
-+ 端口 ：
-端口默认监听：`3000`
 
-+ API文档
+
+### API文档
 开发环境默认开启了swagger 的API，可访问 `localhost:3000/api`查看
 如果想关闭，请在 `main.ts`中找到
 ```
@@ -79,23 +61,50 @@ OSS_QINIU_DOMAIN=
    }
 ```
 
-## 运行
+### 默认配置项
+项目根目录下 `./configs`下存放着功能配置
++ `./mysql.config.ts` 为Mysql的配置，但其服务器配置来自环境变量
++ `./winston.config.ts` 为Winston日志配置，如日志存放位置，日志记录等级，格式化等
 
-```bash
-$ npm install 
-
-# 开发模式运行
-$ npm run dev
-
-# 生产模式运行
-$ npm run start:prod
+## 部署
+NestJS项目部署分为两步：
++ 1. 打包
+``` bash | zsh
+npm run build
 ```
-## 部署到服务器
++ 2. NodeJS运行
+``` bash | zsh
+npm run start:prod
+```
+### 部署后
+为了和前端非必要不跨域，这边建议将端口映射到前端域名的`/api`路径上，在Nginx进行配置将请求转发到后端服务即可
 
-参考文章：[【NestJS应用从0到1】11.部署及git-hook自动部署](https://juejin.cn/post/7387291151735275529)
+Nginx配置如下：
+```
+   # 转发接口请求
+   location /api {
+      proxy_pass http://127.0.0.1:3000;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      rewrite ^/api/(.*) /$1 break;
+   }
 
-如果你也刚好是使用webhook自动部署，在deploy文件夹下已经准备好了`webhook脚本`以及`服务重启`脚本
-## 需要注意
+```
+
+### 使用webhook部署到服务器
+如果你也刚好是使用webhook自动部署，这篇文章一定能够给你帮助 ：[【NestJS应用从0到1】11.部署及git-hook自动部署](https://juejin.cn/post/7387291151735275529)
+
+在deploy文件夹下已经准备好了`webhook脚本`以及`服务重启`脚本
+
+`/deploy` 文件如下：
++ `webhook.sh` webhook触发时执行的脚本;用于拉取仓库以及执行`restart.sh`
++ `restart.sh` 重启脚本；1.首先会杀死当前运行的该服务。2.将环境变量复制到项目文件中重新build新文件。3.执行后台运行命令。
+
+
+
+### 需要注意
 
 最需要注意的是数据库配置
 
