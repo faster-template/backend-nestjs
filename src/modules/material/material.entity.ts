@@ -2,7 +2,11 @@ import { BaseWithCreatorEntity } from '@/core/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 import { EMaterialType, EOssType } from './material.enum';
 
-@Entity('material')
+@Entity('material', {
+  orderBy: {
+    createTime: 'DESC',
+  },
+})
 export class MaterialEntity extends BaseWithCreatorEntity {
   @Column({
     type: 'enum',

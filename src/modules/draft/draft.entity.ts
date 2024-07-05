@@ -2,7 +2,11 @@ import { BaseWithCreatorEntity } from '@/core/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 import { EDraftType, EResourceType } from './draft.enum';
 
-@Entity('draft')
+@Entity('draft', {
+  orderBy: {
+    createTime: 'DESC',
+  },
+})
 export class DraftEntity extends BaseWithCreatorEntity {
   @Column({
     type: 'varchar',

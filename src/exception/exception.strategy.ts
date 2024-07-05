@@ -6,7 +6,6 @@ import {
 import { CustomException } from './custom-exception';
 import { EErrorCode } from './exception.enum';
 import { FastifyError } from 'fastify';
-import { TypeORMError } from 'typeorm';
 
 interface ExceptionStrategy {
   handle(exception: any): CustomException;

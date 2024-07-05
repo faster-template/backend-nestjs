@@ -2,7 +2,11 @@ import { Column, Entity, Tree, TreeChildren, TreeParent } from 'typeorm';
 import { ECommentRelationType } from './comment.enum';
 import { BaseTreeEntity } from '@/core/entities/base-tree.entity';
 
-@Entity('comment')
+@Entity('comment', {
+  orderBy: {
+    createTime: 'DESC',
+  },
+})
 @Tree('materialized-path')
 export class CommentEntity extends BaseTreeEntity<CommentEntity> {
   @TreeParent()

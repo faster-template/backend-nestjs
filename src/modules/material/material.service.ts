@@ -10,7 +10,6 @@ import {
 import { MaterialEntity } from './material.entity';
 import { REQUEST } from '@nestjs/core';
 import { EMaterialType } from './material.enum';
-import { plainToClass } from 'class-transformer';
 @Injectable()
 export class MaterialService {
   private materialRepository: BaseDefaultRepository<MaterialEntity>;
@@ -45,19 +44,13 @@ export class MaterialService {
   async getList(
     pagination: PaginationDto,
   ): Promise<PaginationResult<MaterialViewDto>> {
-    const result = (await this.materialRepository.paginate(
+    const result = (await this.materialRepository.paginateWithAutoMapper(
       pagination,
-    )) as PaginationResult<MaterialEntity>;
+    )) as PaginationResult<MaterialViewDto>;
     result.items.forEach((item) => {
       item.path = `${this.ossService.getDomain(item.ossType)}/${item.path}`;
     });
-    return {
-      total: result.total,
-      items: plainToClass(MaterialViewDto, result.items, {
-        strategy: 'excludeAll',
-        excludeExtraneousValues: true,
-      }),
-    };
+    return result;
   }
 
   // 这里需要根据mimetype来判断类型

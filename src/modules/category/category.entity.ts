@@ -1,7 +1,11 @@
 import { BaseTreeEntity } from '@/core/entities/base-tree.entity';
 import { Column, Entity, Tree, TreeChildren, TreeParent } from 'typeorm';
 
-@Entity('category')
+@Entity('category', {
+  orderBy: {
+    sort: 'ASC',
+  },
+})
 @Tree('materialized-path')
 export class CategoryEntity extends BaseTreeEntity<CategoryEntity> {
   @Column({ type: 'varchar', length: 255, nullable: false })

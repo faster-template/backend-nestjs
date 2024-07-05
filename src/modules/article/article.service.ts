@@ -8,7 +8,7 @@ import {
 import { EState } from '@/core/enums';
 import { REQUEST } from '@nestjs/core';
 import { DataSource, SelectQueryBuilder } from 'typeorm';
-import { ArticleUpdateDto } from './article.dto';
+import { ArticleUpdateDto, ArticleViewDto } from './article.dto';
 import { DraftService } from '../draft/draft.service';
 import { EDraftType, EResourceType } from '../draft/draft.enum';
 import { CustomException } from '@/exception/custom-exception';
@@ -53,7 +53,7 @@ export class ArticleService {
   async getList(
     pagination: PaginationDto,
     includeDraft: boolean = false,
-  ): Promise<PaginationResult<ArticleEntity>> {
+  ): Promise<PaginationResult<ArticleViewDto>> {
     let queryBuilder = this.articleRepository.createQueryBuilder('article');
     if (!includeDraft) {
       queryBuilder = (await this.articleRepository.onlyQueryNormal({
@@ -78,16 +78,28 @@ export class ArticleService {
         'category.name',
       ]);
 
-    return (await this.articleRepository.paginate(pagination, {
-      queryBuilder,
-      onlyQueryBuilder: false,
-    })) as PaginationResult<ArticleEntity>;
+    const result = (await this.articleRepository.paginateWithAutoMapper(
+      pagination,
+      {
+        queryBuilder,
+        onlyQueryBuilder: false,
+      },
+    )) as PaginationResult<ArticleEntity>;
+
+    return result;
   }
 
   async findOne(id: string): Promise<ArticleEntity> {
-    return await this.articleRepository.findOne({
-      where: { id },
-    });
+    return (
+      await this.articleRepository.findOne({
+        where: { id },
+        relations: ['creator', 'category'],
+      })
+    ).Mapper(ArticleViewDto);
+    // return await this.articleRepository.findOneWithAutoMapper({
+    //   where: { id },
+    //   relations: ['creator', 'category'],
+    // });
   }
   // 获取草稿列表
   async getDraftList(id: string): Promise<DraftEntity[]> {

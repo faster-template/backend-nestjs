@@ -43,6 +43,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
+    "dayjs": "^1.11.11",
     "dompurify": "^3.1.5",
     "fastify-swagger": "^5.2.0",
     "isomorphic-dompurify": "^2.12.0",

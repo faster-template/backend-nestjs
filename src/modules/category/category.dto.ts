@@ -4,8 +4,11 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUppercase,
   Length,
 } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import { BaseTreeNodeViewDto } from '@/core/dto/base-tree.dto';
 
 export class CategoryCreateDto {
   @IsString()
@@ -15,6 +18,7 @@ export class CategoryCreateDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 20)
+  @IsUppercase({ message: 'Key必须全大写' })
   key: string;
   @IsString()
   description: string;
@@ -24,20 +28,12 @@ export class CategoryCreateDto {
   parentId?: string | null;
   @IsNumber()
   sort: number;
+
+  creatorId?: string;
 }
 export class CategoryUpdateDto extends PartialType(CategoryCreateDto) {
   @IsNotEmpty()
   id: string;
-}
-
-export class CategoryViewDto {
-  id: string;
-  name: string;
-  key: string;
-  description: string;
-  parentId?: string | null;
-  children?: CategoryViewDto[] | null;
-  sort: number;
 }
 
 export class CategorySortDto {
@@ -50,4 +46,22 @@ export class CategorySortDto {
   @IsNumber()
   @IsNotEmpty()
   position: number;
+}
+
+export class CategoryViewDto extends BaseTreeNodeViewDto {
+  @Expose()
+  id: string;
+  @Expose()
+  name: string;
+  @Expose()
+  key: string;
+  @Expose()
+  description: string;
+  @Expose()
+  parentId?: string | null;
+  @Expose()
+  sort: number;
+  @Expose()
+  @Type(() => CategoryViewDto)
+  children: CategoryViewDto[];
 }

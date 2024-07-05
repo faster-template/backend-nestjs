@@ -3,7 +3,11 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { UserRoleEntity } from '../user-role/user-role.entity';
 import { BaseDefaultEntity } from '@/core/entities/base.entity';
 
-@Entity('user')
+@Entity('user', {
+  orderBy: {
+    createTime: 'DESC',
+  },
+})
 export class UserEntity extends BaseDefaultEntity {
   @Column({ nullable: true, unique: true, length: 20 })
   userName: string;

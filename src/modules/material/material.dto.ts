@@ -29,8 +29,6 @@ export class MaterialCreateDto {
 
 export class MaterialViewDto {
   @Expose()
-  id: string;
-  @Expose()
   type: EMaterialType;
   @Expose()
   ossType: EOssType;

@@ -2,7 +2,7 @@ import { BaseDefaultRepository } from '@/core/repository/base.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { DraftCreateDto } from './draft.dto';
 import { DraftEntity } from './draft.entity';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { EResourceType } from './draft.enum';
 import { REQUEST } from '@nestjs/core';
@@ -82,9 +82,9 @@ export class DraftService {
   findDrafts(
     resourceType: EResourceType,
     resourceId: string,
-    repository: Repository<DraftEntity> = this.draftRepository,
+    repository: BaseDefaultRepository<DraftEntity> = this.draftRepository,
   ) {
-    return repository.find({
+    return repository.findWithAutoMapper({
       where: {
         resourceType,
         resourceId,
@@ -96,7 +96,7 @@ export class DraftService {
   async deleteDrafts(
     resourceType: EResourceType,
     resourceId: string,
-    repository: Repository<DraftEntity> = this.draftRepository,
+    repository: BaseDefaultRepository<DraftEntity> = this.draftRepository,
   ) {
     const drafList = await this.findDrafts(
       resourceType,
@@ -114,7 +114,9 @@ export class DraftService {
     resourceId: string,
     queryRunner: QueryRunner,
   ) {
-    const _repository = queryRunner.manager.getRepository(DraftEntity);
+    const _repository = queryRunner.manager.getRepository(
+      DraftEntity,
+    ) as BaseDefaultRepository<DraftEntity>;
     return await this.deleteDrafts(resourceType, resourceId, _repository);
   }
 }
