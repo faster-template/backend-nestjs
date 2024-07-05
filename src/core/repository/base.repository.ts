@@ -2,9 +2,13 @@ import { EState } from '@/core/enums';
 import {
   DataSource,
   EntityTarget,
+  FindManyOptions,
+  FindOneOptions,
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
+import { AutoMapper } from '../auto-mapper';
+import { BaseDefaultEntity } from '../entities/base.entity';
 
 export enum EPaginationOrder {
   ASC = 'ASC',
@@ -50,7 +54,9 @@ export const defaultQueryOption = {
   queryBuilder: null,
 };
 
-export class BaseDefaultRepository<T> extends Repository<T> {
+export class BaseDefaultRepository<
+  T extends BaseDefaultEntity,
+> extends Repository<T> {
   constructor(
     private dataSource: DataSource,
     private entity: EntityTarget<T>,
@@ -169,5 +175,33 @@ export class BaseDefaultRepository<T> extends Repository<T> {
       return queryBuilder;
     }
     return queryBuilder.getMany();
+  }
+
+  async findOneWithAutoMapper(options: FindOneOptions): Promise<T> {
+    const result = await this.findOne(options);
+    return AutoMapper.MapperTo(result);
+  }
+
+  async findWithAutoMapper(options: FindManyOptions): Promise<T[]> {
+    const result = await this.find(options);
+    return AutoMapper.MapperTo(result);
+  }
+
+  async paginateWithAutoMapper(
+    pagination: PaginationDto,
+    option: QueryOption<T> = defaultQueryOption,
+  ): Promise<PaginationResult<T> | SelectQueryBuilder<T>> {
+    if (option.onlyQueryBuilder) {
+      return this.paginate(pagination, option);
+    } else {
+      const result = (await this.paginate(
+        pagination,
+        option,
+      )) as PaginationResult<T>;
+      return {
+        items: AutoMapper.MapperTo(result.items),
+        total: result.total,
+      };
+    }
   }
 }

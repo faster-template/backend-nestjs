@@ -33,6 +33,8 @@ import { ScheduleTaskModule } from './schedule-task/schedule-task.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { CsrfInterceptor } from './interceptors/csrf.interceptor';
 import { MaterialModule } from './modules/material/material.module';
+import { LoggerProxy } from './common/logger.proxy';
+// import { LoggerProxy } from './common/logger.proxy';
 
 @Global()
 @Dependencies(DataSource)
@@ -98,8 +100,9 @@ import { MaterialModule } from './modules/material/material.module';
       provide: APP_INTERCEPTOR,
       useClass: CsrfInterceptor,
     },
+    LoggerProxy,
   ],
-  exports: [HttpModule],
+  exports: [HttpModule, LoggerProxy],
 })
 export class AppModule {
   dataSource: any;

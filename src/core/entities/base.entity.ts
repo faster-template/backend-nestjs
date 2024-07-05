@@ -1,11 +1,7 @@
 import { EState } from '@/core/enums';
 import { IPayload } from '@/modules/user-auth/user-auth.interface';
 import { UserEntity } from '@/modules/user/user.entity';
-import {
-  ClassConstructor,
-  ClassTransformOptions,
-  plainToClass,
-} from 'class-transformer';
+import { ClassConstructor, ClassTransformOptions } from 'class-transformer';
 import {
   BaseEntity,
   Column,
@@ -15,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AutoMapper } from '../auto-mapper';
 
 export abstract class BaseDefaultEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -32,14 +29,8 @@ export abstract class BaseDefaultEntity extends BaseEntity {
   @Column({ default: EState.Normal })
   state: EState;
 
-  Mapper<T>(
-    tar: ClassConstructor<T>,
-    option: ClassTransformOptions = {
-      strategy: 'excludeAll',
-      excludeExtraneousValues: true,
-    },
-  ) {
-    return plainToClass(tar, this, option);
+  Mapper<T>(tar?: ClassConstructor<T>, option?: ClassTransformOptions) {
+    return AutoMapper.MapperTo(this, tar, option);
   }
 }
 

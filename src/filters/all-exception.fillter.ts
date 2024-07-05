@@ -9,7 +9,6 @@ export class AllExceptionFilter implements ExceptionFilter {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
-
   catch(exception: unknown, host: ArgumentsHost) {
     if (process.env.NODE_ENV === 'development') {
       console.log(
