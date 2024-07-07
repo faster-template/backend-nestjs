@@ -13,14 +13,12 @@ import {
   CommentCreateSuccessViewDto,
   CommentListViewDto,
   CommentQueryDto,
-  CommentViewDto,
 } from './comment.dto';
 import { IPayload } from '../user-auth/user-auth.interface';
 import { ECommentRelationType } from './comment.enum';
 import { ArticleService } from '../article/article.service';
-import { plainToClass } from 'class-transformer';
 import { EState } from '@/core/enums';
-
+import { AutoMapper } from '@/core/auto-mapper';
 @Injectable()
 export class CommentService {
   private commentRepository: BaseTreeRepository<CommentEntity>;
@@ -98,10 +96,7 @@ export class CommentService {
       }),
     )) as unknown as CommentEntity[];
     return {
-      items: plainToClass(CommentViewDto, result, {
-        strategy: 'excludeAll',
-        excludeExtraneousValues: true,
-      }),
+      items: AutoMapper.MapperTo(result),
       total,
     };
   }

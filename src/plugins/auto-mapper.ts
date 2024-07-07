@@ -3,6 +3,8 @@ import { ArticleViewDto } from '@/modules/article/article.dto';
 import { ArticleEntity } from '@/modules/article/article.entity';
 import { CategoryViewDto } from '@/modules/category/category.dto';
 import { CategoryEntity } from '@/modules/category/category.entity';
+import { CommentViewDto } from '@/modules/comment/comment.dto';
+import { CommentEntity } from '@/modules/comment/comment.entity';
 import { DraftViewDto } from '@/modules/draft/draft.dto';
 import { DraftEntity } from '@/modules/draft/draft.entity';
 import { MaterialViewDto } from '@/modules/material/material.dto';
@@ -14,5 +16,6 @@ export default {
     AutoMapper.addMapper(DraftEntity, DraftViewDto);
     AutoMapper.addMapper(MaterialEntity, MaterialViewDto);
     AutoMapper.addMapper(CategoryEntity, CategoryViewDto);
+    AutoMapper.addMapper(CommentEntity, CommentViewDto);
   },
 };

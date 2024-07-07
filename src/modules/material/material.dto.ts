@@ -2,6 +2,8 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { EMaterialType, EOssType } from './material.enum';
 
 import { Expose } from 'class-transformer';
+import { PickType } from '@nestjs/swagger';
+import { BaseWithCreatorViewDto } from '@/core/dto/base.dto';
 // export type MaterialCreateDto = Pick<
 //   MaterialEntity,
 //   'type' | 'ossType' | 'path'
@@ -27,7 +29,10 @@ export class MaterialCreateDto {
   folder: string;
 }
 
-export class MaterialViewDto {
+export class MaterialViewDto extends PickType(BaseWithCreatorViewDto, [
+  'id',
+  'createTime',
+]) {
   @Expose()
   type: EMaterialType;
   @Expose()
