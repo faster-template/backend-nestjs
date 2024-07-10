@@ -10,6 +10,8 @@ import {
 import { ECommentRelationType } from './comment.enum';
 import { Type, Expose, Transform } from 'class-transformer';
 import { UserInfoDto } from '../user/user.dto';
+import { TimeAgoTransform } from '@/decorators/timeago.transform.decorator';
+import { EState } from '@/core/enums';
 
 export class CommentQueryDto {
   @IsNotEmpty()
@@ -34,11 +36,14 @@ export class CommentCreateDto extends PartialType(CommentQueryDto) {
 export class CommentViewDto {
   @Expose()
   id: string;
+  @Expose()
+  state: EState;
 
   @Expose()
   content: string;
 
   @Expose()
+  @Transform(TimeAgoTransform())
   createTime: Date;
 
   @Expose()

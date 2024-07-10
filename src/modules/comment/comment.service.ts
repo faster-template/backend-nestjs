@@ -13,6 +13,7 @@ import {
   CommentCreateSuccessViewDto,
   CommentListViewDto,
   CommentQueryDto,
+  CommentViewDto,
 } from './comment.dto';
 import { IPayload } from '../user-auth/user-auth.interface';
 import { ECommentRelationType } from './comment.enum';
@@ -61,7 +62,7 @@ export class CommentService {
     return result.Mapper(CommentCreateSuccessViewDto);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<void | CommentViewDto> {
     if (!id) throw new NotFoundException('评论id不能为空');
     const comment = await this.commentRepository.findOne({ where: { id } });
     if (!comment) throw new NotFoundException('评论不存在');
@@ -72,12 +73,14 @@ export class CommentService {
       throw new ForbiddenException('不能删除其他人的评论');
     }
     const childrens = await this.commentRepository.findDescendants(comment);
-    if (childrens.length > 0) {
+    if (childrens.length > 1) {
       comment.state = EState.SoftDeleted;
       comment.content = '评论已被删除';
       await this.commentRepository.save(comment);
+      return comment.Mapper();
     } else {
       await this.commentRepository.remove(comment);
+      return null;
     }
   }
   async getList(commentQueryDto: CommentQueryDto): Promise<CommentListViewDto> {
