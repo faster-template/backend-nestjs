@@ -89,15 +89,20 @@ export class ExceptionHandler {
     QueryFailedError: new TypeOrmExceptionStrategy(),
   };
 
-  static handle(exception: any): CustomException {
+  static handle(exception: Error): CustomException {
     if (exception instanceof CustomException) return exception;
 
     const strategy = this.strategies[exception.constructor.name];
     if (strategy) {
       return strategy.handle(exception);
     }
+    let msg = exception.message;
+    // 如果message中有中文
+    if (!msg || !/[\u4e00-\u9fa5]/.test(msg)) {
+      msg = '服务器开小差了，请刷新重试';
+    }
     return new CustomException({
-      message: '服务器开小差了',
+      message: msg,
       code: EErrorCode.SERVER_ERROR,
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       manual: false,

@@ -19,7 +19,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const customException = ExceptionHandler.handle(exception);
+    const customException = ExceptionHandler.handle(exception as Error);
     const { code, message } = customException;
     const responseData: IResponseData = {
       code,
