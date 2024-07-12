@@ -2,7 +2,7 @@ import { Controller, Post, Req } from '@nestjs/common';
 import { UploadOption, UploadService } from './upload.service';
 import { FastifyRequest } from 'fastify';
 import { string2Enum } from '@/utils';
-import { EOssType } from '../material/material.enum';
+import { EFolder, EOssType } from '../material/material.enum';
 import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
 
@@ -42,8 +42,13 @@ export class UploadController {
     const file = req.body['file'];
     // 进行文件保存等操作
     const result = await this.uploadService.upload(file, {
-      folderPath: 'avatar',
-      resize: { width: 100, height: 100, fit: 'cover', position: 'center' },
+      folder: EFolder.AVATAR,
+      resize: {
+        width: 400,
+        height: 400,
+        fit: 'cover',
+        position: 'center',
+      },
       quality: 80,
     });
     return `${result.pathPrefix}/${result.path}`;
@@ -51,13 +56,13 @@ export class UploadController {
 
   private async generateOption(req: FastifyRequest): Promise<UploadOption> {
     const option: UploadOption = {
-      fileNameRandom: true,
+      noRandomFileName: false,
     };
-    if (req.body['fileNameRandom']) {
-      option.fileNameRandom = !req.body['fileNameRandom'].value;
+    if (req.body['noRandomFileName']) {
+      option.noRandomFileName = !!req.body['noRandomFileName'].value;
     }
-    if (req.body['folderPath']) {
-      option.folderPath = req.body['folderPath'].value || null;
+    if (req.body['folder']) {
+      option.folder = req.body['folder'].value || null;
     }
     if (req.body['width'] || req.body['height']) {
       option.resize = {};

@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 
 export interface OssUploadOption {
   fileName: string;
-  folderPath: string;
+  folder: string;
 }
 
 export interface OssUploadResult {

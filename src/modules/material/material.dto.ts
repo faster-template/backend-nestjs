@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { EMaterialType, EOssType } from './material.enum';
+import { EFolder, EMaterialType, EOssType } from './material.enum';
 
 import { Expose } from 'class-transformer';
 import { PickType } from '@nestjs/swagger';
@@ -26,7 +26,8 @@ export class MaterialCreateDto {
   name: string;
 
   @IsString()
-  folder: string;
+  @IsEnum(EFolder, { message: '素材存放位置错误' })
+  folder: EFolder;
 }
 
 export class MaterialViewDto extends PickType(BaseWithCreatorViewDto, [

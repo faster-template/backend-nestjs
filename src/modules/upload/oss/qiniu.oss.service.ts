@@ -38,8 +38,8 @@ export class QiNiuOssService implements IOssService {
     const formUploader = new qiniu.form_up.FormUploader(config);
     const putExtra = new qiniu.form_up.PutExtra();
 
-    const { fileName, folderPath } = uploadOption;
-    const filename = `${folderPath || ''}${folderPath && !folderPath.endsWith('/') ? '/' : ''}${fileName}`;
+    const { fileName, folder } = uploadOption;
+    const filename = `${folder || ''}${folder && !folder.endsWith('/') ? '/' : ''}${fileName}`;
     return new Promise((resolve, reject) => {
       formUploader
         .put(uploadToken, filename, file, putExtra)
