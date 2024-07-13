@@ -1,10 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleEntity } from './article.entity';
-import {
-  BaseDefaultRepository,
-  IPagination,
-  IPaginationResult,
-} from '@/core/repository/base.repository';
+import { BaseDefaultRepository } from '@/core/repository/base.repository';
 import { EState } from '@/core/enums';
 import { REQUEST } from '@nestjs/core';
 import { DataSource, SelectQueryBuilder } from 'typeorm';
@@ -13,6 +9,7 @@ import { DraftService } from '../draft/draft.service';
 import { EDraftType, EResourceType } from '../draft/draft.enum';
 import { CustomException } from '@/exception/custom-exception';
 import { DraftEntity } from '../draft/draft.entity';
+import { IPagination, IPaginationResult } from '@/types';
 
 @Injectable()
 export class ArticleService {
@@ -78,7 +75,7 @@ export class ArticleService {
         'category.name',
       ]);
 
-    const result = (await this.articleRepository.paginateWithAutoMapper(
+    const result = (await this.articleRepository.paginateWithMapper(
       pagination,
       {
         queryBuilder,

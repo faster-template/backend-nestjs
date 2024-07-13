@@ -35,6 +35,7 @@ import { CsrfInterceptor } from './interceptors/csrf.interceptor';
 import { MaterialModule } from './modules/material/material.module';
 import { LoggerProxy } from './common/logger.proxy';
 // import { LoggerProxy } from './common/logger.proxy';
+import { UserManageModule } from './modules/user-manage/user-manage.module';
 
 @Global()
 @Dependencies(DataSource)
@@ -72,6 +73,7 @@ import { LoggerProxy } from './common/logger.proxy';
     ScheduleTaskModule,
     UploadModule,
     MaterialModule,
+    UserManageModule,
   ],
   controllers: [],
   providers: [

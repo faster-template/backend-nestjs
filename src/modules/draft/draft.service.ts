@@ -84,7 +84,7 @@ export class DraftService {
     resourceId: string,
     repository: BaseDefaultRepository<DraftEntity> = this.draftRepository,
   ) {
-    return repository.findWithAutoMapper({
+    return repository.findWithMapper({
       where: {
         resourceType,
         resourceId,

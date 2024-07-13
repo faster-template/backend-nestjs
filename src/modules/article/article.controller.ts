@@ -5,7 +5,7 @@ import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
 import { EState } from '@/core/enums';
 import { Pagination } from '@/decorators/pagination.decorator';
-import { EWhereOperator, IPagination } from '@/core/repository/base.repository';
+import { EWhereOperator, IPaginationParams, PaginationDto } from '@/types';
 
 @Controller('article')
 export class ArticleController {
@@ -20,11 +20,12 @@ export class ArticleController {
   @Get('getList')
   @Roles(EUserRole.SuperAdmin)
   getList(
-    @Pagination() pagination: IPagination,
+    @Pagination() paginationParams: IPaginationParams,
     @Query('title') title: string,
     @Query('state') state: EState,
     @Query('categoryId') categoryId: string,
   ) {
+    const pagination = new PaginationDto(paginationParams);
     pagination.where = [
       {
         field: 'title',
@@ -45,10 +46,11 @@ export class ArticleController {
 
   @Get('list')
   getArticleList(
-    @Pagination() pagination: IPagination,
+    @Pagination() paginationParams: IPaginationParams,
     @Query('title') title: string,
     @Query('categoryId') categoryId: string,
   ) {
+    const pagination = new PaginationDto(paginationParams);
     pagination.where = [
       {
         field: 'title',

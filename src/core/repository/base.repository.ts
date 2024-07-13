@@ -9,53 +9,12 @@ import {
 } from 'typeorm';
 import { AutoMapper } from '../auto-mapper';
 import { BaseDefaultEntity } from '../entities/base.entity';
-
-export enum EPaginationOrder {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
-
-export interface IPagination {
-  size: number;
-  page: number;
-  order?: EPaginationOrder;
-  orderBy?: string;
-  where?: whereItem[] | Record<string, unknown>;
-}
-export class PaginationDto implements IPagination {
-  constructor(pagination: IPagination) {
-    this.size = pagination.size || 20;
-    this.page = pagination.page || 1;
-    this.order = pagination.order || EPaginationOrder.DESC;
-    this.orderBy = pagination.orderBy || 'createTime';
-  }
-
-  size: number;
-  page: number;
-  order?: EPaginationOrder;
-  orderBy?: string;
-  where?: whereItem[] | Record<string, unknown>;
-}
-export class whereItem {
-  field: string = '';
-  operator?: EWhereOperator = EWhereOperator.Equal;
-  value?: any = null;
-}
-export enum EWhereOperator {
-  Equal = '=',
-  Like = 'LIKE',
-  GreaterThan = '>',
-  GreaterThanOrEqual = '>=',
-  LessThan = '<',
-  LessThanOrEqual = '<=',
-  IsNull = 'IS NULL',
-  IsNotNull = 'IS NOT NULL',
-}
-
-export interface IPaginationResult<T> {
-  items: T[];
-  total: number;
-}
+import {
+  EWhereOperator,
+  IPagination,
+  IPaginationResult,
+  whereItem,
+} from '@/types';
 
 export interface QueryOption<T> {
   onlyQueryBuilder?: boolean;
@@ -190,17 +149,17 @@ export class BaseDefaultRepository<
     return queryBuilder.getMany();
   }
 
-  async findOneWithAutoMapper(options: FindOneOptions): Promise<T> {
+  async findOneWithMapper(options: FindOneOptions): Promise<T> {
     const result = await this.findOne(options);
     return AutoMapper.MapperTo(result);
   }
 
-  async findWithAutoMapper(options: FindManyOptions): Promise<T[]> {
+  async findWithMapper(options: FindManyOptions): Promise<T[]> {
     const result = await this.find(options);
     return AutoMapper.MapperTo(result);
   }
 
-  async paginateWithAutoMapper(
+  async paginateWithMapper(
     pagination: IPagination,
     option: QueryOption<T> = defaultQueryOption,
   ): Promise<IPaginationResult<T> | SelectQueryBuilder<T>> {

@@ -1,16 +1,17 @@
 // pagination.decorator.ts
+
 import {
+  IPaginationParams,
   EPaginationOrder,
-  IPagination,
-  PaginationDto,
-} from '@/core/repository/base.repository';
+  PaginationParamsDto,
+} from '@/types';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const Pagination = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): IPagination => {
+  (data: unknown, ctx: ExecutionContext): IPaginationParams => {
     const request = ctx.switchToHttp().getRequest();
     const { page, size, order, orderBy } = request.query;
-    const pagination = new PaginationDto({
+    const pagination = new PaginationParamsDto({
       page: Number(page),
       size: Number(size),
       order:

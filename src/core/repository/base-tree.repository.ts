@@ -39,7 +39,7 @@ export class BaseTreeRepository<
   }
 
   async getNode(id: string) {
-    const node = await this.findOneWithAutoMapper({
+    const node = await this.findOneWithMapper({
       where: {
         id,
       } as FindOptionsWhere<CustomEntity>,
@@ -119,7 +119,7 @@ export class BaseTreeRepository<
    * @returns 根节点列表
    */
   async rootList() {
-    const rootList = await this.findRootsWithAutoMapper({
+    const rootList = await this.findRootsWithMapper({
       depth: 1,
     });
     return rootList.sort((a, b) => a.sort - b.sort);
@@ -223,18 +223,16 @@ export class BaseTreeRepository<
     }
   }
 
-  async findOneWithAutoMapper(options: FindOneOptions): Promise<CustomEntity> {
+  async findOneWithMapper(options: FindOneOptions): Promise<CustomEntity> {
     const result = await this.findOne(options);
     return AutoMapper.MapperTo(result);
   }
 
-  async findWithAutoMapper(options: FindManyOptions): Promise<CustomEntity[]> {
+  async findWithMapper(options: FindManyOptions): Promise<CustomEntity[]> {
     const result = await this.find(options);
     return AutoMapper.MapperTo(result);
   }
-  async findRootsWithAutoMapper(
-    options: FindTreeOptions,
-  ): Promise<CustomEntity[]> {
+  async findRootsWithMapper(options: FindTreeOptions): Promise<CustomEntity[]> {
     const result = await this.findRoots(options);
     return AutoMapper.MapperTo(result);
   }

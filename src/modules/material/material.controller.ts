@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { MaterialService } from './material.service';
 import { Pagination } from '@/decorators/pagination.decorator';
-import { IPagination } from '@/core/repository/base.repository';
 import { EMaterialType, EOssType } from './material.enum';
 import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
 import { MaterialCreateDto } from './material.dto';
+import { IPaginationParams, PaginationDto } from '@/types';
 
 @Controller('material')
 export class MaterialController {
@@ -14,10 +14,11 @@ export class MaterialController {
   @Get('getList')
   @Roles(EUserRole.SuperAdmin)
   getList(
-    @Pagination() pagination: IPagination,
+    @Pagination() paginationParams: IPaginationParams,
     @Query('type') type: EMaterialType,
     @Query('ossType') ossType: EOssType,
   ) {
+    const pagination = new PaginationDto(paginationParams);
     pagination.where = [
       {
         field: 'type',
