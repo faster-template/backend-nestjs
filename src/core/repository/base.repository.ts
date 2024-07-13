@@ -15,11 +15,25 @@ export enum EPaginationOrder {
   DESC = 'DESC',
 }
 
-export class PaginationDto {
-  size: number = 20;
-  page: number = 1;
-  order?: EPaginationOrder = EPaginationOrder.DESC;
-  orderBy?: string = 'createTime';
+export interface IPagination {
+  size: number;
+  page: number;
+  order?: EPaginationOrder;
+  orderBy?: string;
+  where?: whereItem[] | Record<string, unknown>;
+}
+export class PaginationDto implements IPagination {
+  constructor(pagination: IPagination) {
+    this.size = pagination.size || 20;
+    this.page = pagination.page || 1;
+    this.order = pagination.order || EPaginationOrder.DESC;
+    this.orderBy = pagination.orderBy || 'createTime';
+  }
+
+  size: number;
+  page: number;
+  order?: EPaginationOrder;
+  orderBy?: string;
   where?: whereItem[] | Record<string, unknown>;
 }
 export class whereItem {
@@ -27,7 +41,6 @@ export class whereItem {
   operator?: EWhereOperator = EWhereOperator.Equal;
   value?: any = null;
 }
-
 export enum EWhereOperator {
   Equal = '=',
   Like = 'LIKE',
@@ -39,7 +52,7 @@ export enum EWhereOperator {
   IsNotNull = 'IS NOT NULL',
 }
 
-export interface PaginationResult<T> {
+export interface IPaginationResult<T> {
   items: T[];
   total: number;
 }
@@ -73,9 +86,9 @@ export class BaseDefaultRepository<
    * @returns
    */
   async paginate(
-    pagination: PaginationDto,
+    pagination: IPagination,
     option: QueryOption<T> = defaultQueryOption,
-  ): Promise<PaginationResult<T> | SelectQueryBuilder<T>> {
+  ): Promise<IPaginationResult<T> | SelectQueryBuilder<T>> {
     const { size, page: num, order, orderBy: sort, where } = pagination;
     let { queryBuilder } = option;
     const { onlyQueryBuilder } = option;
@@ -188,16 +201,16 @@ export class BaseDefaultRepository<
   }
 
   async paginateWithAutoMapper(
-    pagination: PaginationDto,
+    pagination: IPagination,
     option: QueryOption<T> = defaultQueryOption,
-  ): Promise<PaginationResult<T> | SelectQueryBuilder<T>> {
+  ): Promise<IPaginationResult<T> | SelectQueryBuilder<T>> {
     if (option.onlyQueryBuilder) {
       return this.paginate(pagination, option);
     } else {
       const result = (await this.paginate(
         pagination,
         option,
-      )) as PaginationResult<T>;
+      )) as IPaginationResult<T>;
       return {
         items: AutoMapper.MapperTo(result.items),
         total: result.total,

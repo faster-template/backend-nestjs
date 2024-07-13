@@ -5,10 +5,7 @@ import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
 import { EState } from '@/core/enums';
 import { Pagination } from '@/decorators/pagination.decorator';
-import {
-  EWhereOperator,
-  PaginationDto,
-} from '@/core/repository/base.repository';
+import { EWhereOperator, IPagination } from '@/core/repository/base.repository';
 
 @Controller('article')
 export class ArticleController {
@@ -23,7 +20,7 @@ export class ArticleController {
   @Get('getList')
   @Roles(EUserRole.SuperAdmin)
   getList(
-    @Pagination() pagination: PaginationDto,
+    @Pagination() pagination: IPagination,
     @Query('title') title: string,
     @Query('state') state: EState,
     @Query('categoryId') categoryId: string,
@@ -48,7 +45,7 @@ export class ArticleController {
 
   @Get('list')
   getArticleList(
-    @Pagination() pagination: PaginationDto,
+    @Pagination() pagination: IPagination,
     @Query('title') title: string,
     @Query('categoryId') categoryId: string,
   ) {

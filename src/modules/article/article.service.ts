@@ -2,8 +2,8 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleEntity } from './article.entity';
 import {
   BaseDefaultRepository,
-  PaginationDto,
-  PaginationResult,
+  IPagination,
+  IPaginationResult,
 } from '@/core/repository/base.repository';
 import { EState } from '@/core/enums';
 import { REQUEST } from '@nestjs/core';
@@ -51,9 +51,9 @@ export class ArticleService {
   }
 
   async getList(
-    pagination: PaginationDto,
+    pagination: IPagination,
     includeDraft: boolean = false,
-  ): Promise<PaginationResult<ArticleViewDto>> {
+  ): Promise<IPaginationResult<ArticleViewDto>> {
     let queryBuilder = this.articleRepository.createQueryBuilder('article');
     if (!includeDraft) {
       queryBuilder = (await this.articleRepository.onlyQueryNormal({
@@ -84,7 +84,7 @@ export class ArticleService {
         queryBuilder,
         onlyQueryBuilder: false,
       },
-    )) as PaginationResult<ArticleEntity>;
+    )) as IPaginationResult<ArticleEntity>;
 
     return result;
   }

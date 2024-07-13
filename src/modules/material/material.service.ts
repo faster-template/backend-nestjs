@@ -4,8 +4,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MaterialCreateDto, MaterialViewDto } from './material.dto';
 import {
   BaseDefaultRepository,
-  PaginationDto,
-  PaginationResult,
+  IPaginationResult,
+  IPagination,
 } from '@/core/repository/base.repository';
 import { MaterialEntity } from './material.entity';
 import { REQUEST } from '@nestjs/core';
@@ -42,11 +42,11 @@ export class MaterialService {
   }
 
   async getList(
-    pagination: PaginationDto,
-  ): Promise<PaginationResult<MaterialViewDto>> {
+    pagination: IPagination,
+  ): Promise<IPaginationResult<MaterialViewDto>> {
     const result = (await this.materialRepository.paginateWithAutoMapper(
       pagination,
-    )) as PaginationResult<MaterialViewDto>;
+    )) as IPaginationResult<MaterialViewDto>;
     result.items.forEach((item) => {
       item.path = `${this.ossService.getDomain(item.ossType)}/${item.path}`;
     });
