@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsEnum, IsString, Length } from 'class-validator';
 import { EVerifyCodeType } from './verify-code.enum';
 
 export class VerifyCodeCreateDto {
@@ -7,6 +7,7 @@ export class VerifyCodeCreateDto {
   phone: string;
 
   @IsString()
+  @IsEnum(EVerifyCodeType, { message: '类型错误' })
   type: EVerifyCodeType;
 }
 

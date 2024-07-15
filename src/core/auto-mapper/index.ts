@@ -71,7 +71,7 @@ export class AutoMapper {
     entity: T | T[],
     targetMapper?: ClassConstructor,
     options?: ClassTransformOptions,
-  ): ClassConstructor | T {
+  ): ClassConstructor | ClassConstructor[] | T | T[] {
     if (!targetMapper) {
       if (!entity || (Array.isArray(entity) && entity.length == 0))
         return entity;
