@@ -34,7 +34,7 @@ export class UserAuthService {
     const user = await this.usersService.findOneByUserName(username);
     if (
       user &&
-      CryptoUtil.compare(password, user.password, user.passwordSalt)
+      CryptoUtil.compare(password, user.password, user.passwordSalt, true)
     ) {
       // 检查用户状态
       if (this.usersService.IsEnable(user)) {

@@ -118,7 +118,7 @@ export class UserService {
     // 寻找同名
     const sameNameUser = await this.findOneByUserName(userName);
     if (sameNameUser) {
-      const encryptedData = CryptoUtil.encrypt(password);
+      const encryptedData = CryptoUtil.encrypt(password, true);
       const passwordEnc = encryptedData.encrypted;
       const passwordSalt = encryptedData.iv;
 
@@ -144,9 +144,9 @@ export class UserService {
     const samePhoneUser = await this.findOneByPhone(phone);
 
     if (samePhoneUser) {
-      const { encrypted, iv } = CryptoUtil.encrypt(phone);
+      const encrypted = CryptoUtil.encryptNoIV(phone);
       const user = this.usersRepository.create({
-        phone: encrypted + '#' + iv,
+        phone: encrypted,
       });
       await this.usersRepository.save(user);
       return user;
@@ -204,10 +204,15 @@ export class UserService {
     oldPassword: string,
     newPassword: string,
   ): Promise<void> {
+    if (oldPassword === newPassword) {
+      throw new CustomException('原密码和新密码不能相同');
+    }
     const user = await this.findOneById(id);
     if (user) {
-      if (CryptoUtil.compare(oldPassword, user.password, user.passwordSalt)) {
-        const encryptedData = CryptoUtil.encrypt(newPassword);
+      if (
+        CryptoUtil.compare(oldPassword, user.password, user.passwordSalt, true)
+      ) {
+        const encryptedData = CryptoUtil.encrypt(newPassword, true);
         const passwordEnc = encryptedData.encrypted;
         const passwordSalt = encryptedData.iv;
         user.password = passwordEnc;

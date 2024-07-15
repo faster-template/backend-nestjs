@@ -24,7 +24,7 @@ export default {
         defaultAdmin.userName = randomUserName;
         // 创建一个随机的8位密码
         const randomPsw = genrateRandomStr(8);
-        const encryptedData = CryptoUtil.encrypt(randomPsw);
+        const encryptedData = CryptoUtil.encrypt(randomPsw, true);
         defaultAdmin.password = encryptedData.encrypted;
         defaultAdmin.passwordSalt = encryptedData.iv;
         defaultAdmin.nickName = '超级管理员';
