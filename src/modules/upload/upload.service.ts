@@ -7,7 +7,7 @@ import { EFolder, EOssType } from '../material/material.enum';
 import { OssService, OssUploadResult } from './oss/oss.service';
 import { ConfigService } from '@nestjs/config';
 import { CustomException } from '@/exception/custom-exception';
-import { string2Enum } from '@/utils';
+import { value2Enum } from '@/utils';
 import { acceptTypes } from './upload.type';
 export interface UploadOption {
   resize?: null | ResizeOptions; // 是否修改图片尺寸
@@ -36,7 +36,7 @@ export class UploadService {
       throw new CustomException('不支持的文件类型');
     }
     // 检测上传文件夹，强制限制只能将文件存放在限制的文件夹内
-    const folder = string2Enum(EFolder, option.folder);
+    const folder = value2Enum(EFolder, option.folder);
     if (!folder) {
       throw new NotFoundException('文件夹路径错误');
     }

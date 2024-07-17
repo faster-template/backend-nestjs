@@ -1,11 +1,10 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { UserManageService } from './user-manage.service';
-import { EState } from '@/core/enums';
 import { Pagination } from '@/decorators/pagination.decorator';
-import { IPaginationParams, PaginationDto, EWhereOperator } from '@/types';
+import { IPaginationParams } from '@/types';
 import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
-import { UserManageSetStateDto } from './user-manage.dto';
+import { UserManageQueryDto, UserManageSetStateDto } from './user-manage.dto';
 
 @Controller('user-manage')
 export class UserManageController {
@@ -15,28 +14,9 @@ export class UserManageController {
   @Roles(EUserRole.SuperAdmin)
   getList(
     @Pagination() paginationParams: IPaginationParams,
-    @Query('nickName') nickName: string,
-    @Query('userName') userName: string,
-    @Query('state') state: EState,
+    @Query() queryParams: UserManageQueryDto,
   ) {
-    const pagination = new PaginationDto(paginationParams);
-    pagination.where = [
-      {
-        field: 'nickName',
-        value: nickName ? `%${nickName}%` : null,
-        operator: EWhereOperator.Like,
-      },
-      {
-        field: 'userName',
-        value: userName ? `%${userName}%` : null,
-        operator: EWhereOperator.Like,
-      },
-      {
-        field: 'state',
-        value: state,
-      },
-    ];
-    return this.userManageService.getList(pagination);
+    return this.userManageService.getList(paginationParams, queryParams);
   }
 
   @Post('setState')

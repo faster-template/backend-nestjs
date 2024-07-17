@@ -3,12 +3,22 @@ import { UserEntity } from '../user/user.entity';
 import { BaseDefaultRepository } from '@/core/repository/base.repository';
 import { DataSource, SelectQueryBuilder } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
-import { IPagination, IPaginationResult } from '@/types';
-import { UserManageInfoDto, UserManageSetStateDto } from './user-manage.dto';
+import {
+  EWhereOperator,
+  IPaginationParams,
+  IPaginationResult,
+  PaginationDto,
+} from '@/types';
+import {
+  UserManageInfoDto,
+  UserManageQueryDto,
+  UserManageSetStateDto,
+} from './user-manage.dto';
 import { AutoMapper } from '@/core/auto-mapper';
 import { UserService } from '../user/user.service';
 import { EState } from '@/core/enums';
 import { CustomException } from '@/exception/custom-exception';
+import { EUserRole } from '../user-role/user-role.enum';
 // import { UserManageInfoDto } from './user-manage.dto';
 // import { IPagination, IPaginationResult } from '@/types';
 
@@ -28,8 +38,28 @@ export class UserManageService {
   }
 
   async getList(
-    pagination: IPagination,
+    paginationParams: IPaginationParams,
+    queryParams: UserManageQueryDto,
   ): Promise<IPaginationResult<UserManageInfoDto>> {
+    const pagination = new PaginationDto(paginationParams);
+    const { nickName, userName, state, role } = queryParams;
+    pagination.where = [
+      {
+        field: 'nickName',
+        value: nickName ? `%${nickName}%` : null,
+        operator: EWhereOperator.Like,
+      },
+      {
+        field: 'userName',
+        value: userName ? `%${userName}%` : null,
+        operator: EWhereOperator.Like,
+      },
+      {
+        field: 'state',
+        value: state,
+      },
+    ];
+
     const qb = (await this.userRepository.paginate(pagination, {
       onlyQueryBuilder: true,
     })) as SelectQueryBuilder<UserEntity>;
@@ -46,6 +76,15 @@ export class UserManageService {
       'user-role.id',
       'user-role.roleType',
     ]);
+    if (role) {
+      if (role !== EUserRole.Default) {
+        qb.where('user-role.roleType = :role', { role });
+      } else {
+        qb.where('user-role.roleType not in (:role)', {
+          role: [EUserRole.SuperAdmin, EUserRole.Admin],
+        });
+      }
+    }
 
     const [items, total] = await qb.getManyAndCount();
     return {

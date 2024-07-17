@@ -9,7 +9,8 @@ export const genrateRandomStr = (length): string => {
   return result;
 };
 
-export function string2Enum<T>(enumObj: T, value: string): T[keyof T] | null {
+export function value2Enum<T>(enumObj: T, value: any): T[keyof T] | null {
+  console.log(enumObj, value, typeof value);
   if (Object.values(enumObj).includes(value)) {
     return value as T[keyof T];
   }

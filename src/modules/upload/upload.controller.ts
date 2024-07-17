@@ -1,7 +1,7 @@
 import { Controller, Post, Req } from '@nestjs/common';
 import { UploadOption, UploadService } from './upload.service';
 import { FastifyRequest } from 'fastify';
-import { string2Enum } from '@/utils';
+import { value2Enum } from '@/utils';
 import { EFolder, EOssType } from '../material/material.enum';
 import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
@@ -86,7 +86,7 @@ export class UploadController {
     }
     //  允许上传时根据请求配置上传到不同的oss
     if (req.body['oss']) {
-      option.oss = string2Enum(EOssType, req.body['oss'].value);
+      option.oss = value2Enum(EOssType, req.body['oss'].value);
     }
 
     return option;
