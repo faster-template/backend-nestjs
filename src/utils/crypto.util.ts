@@ -123,7 +123,6 @@ export class CryptoUtil {
     iv: string,
     useMd5: boolean = false,
   ) {
-    console.log(encrypted, iv);
     const decrypted = this.decrypt(encrypted, iv);
     text = useMd5 ? this.md5(text) : text;
     return decrypted === text;

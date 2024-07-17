@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { CustomException } from '@/exception/custom-exception';
 import { value2Enum } from '@/utils';
 import { acceptTypes } from './upload.type';
+import { EState } from '@/core/enums';
 export interface UploadOption {
   resize?: null | ResizeOptions; // 是否修改图片尺寸
   quality?: number; // 压缩图片的质量
@@ -16,6 +17,7 @@ export interface UploadOption {
   fileName?: string; // 文件名称,无需后缀
   noRandomFileName?: boolean; // 是否随机文件名称,在fileName不存在时生效
   folder?: EFolder; // 文件夹路径
+  materialState?: EState;
 }
 
 @Injectable()
@@ -71,6 +73,7 @@ export class UploadService {
       name: filename || sourceFileName,
       path: uploadResult.path,
       type: this.materialService.getTypeByMime(file.mimetype),
+      state: option.materialState,
     });
     return uploadResult;
   }

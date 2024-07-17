@@ -5,6 +5,7 @@ import { value2Enum } from '@/utils';
 import { EFolder, EOssType } from '../material/material.enum';
 import { Roles } from '../user-role/user-role.decorator';
 import { EUserRole } from '../user-role/user-role.enum';
+import { EState } from '@/core/enums';
 
 @Controller('upload')
 export class UploadController {
@@ -88,7 +89,12 @@ export class UploadController {
     if (req.body['oss']) {
       option.oss = value2Enum(EOssType, req.body['oss'].value);
     }
+    option.materialState =
+      req.body['materialState'] && req.body['materialState'] !== false
+        ? EState.Normal
+        : EState.Disable;
 
+    console.log(req.body, req.body['materialState'], option.materialState);
     return option;
   }
 }

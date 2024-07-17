@@ -77,7 +77,6 @@ export class BaseTreeRepository<
     });
     if (node) {
       const children = await this.findDescendants(node);
-      console.log(children);
       if (children && children.length > 1) {
         throw new CustomException('存在子元素，无法删除');
       }

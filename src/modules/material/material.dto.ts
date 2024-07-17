@@ -1,9 +1,10 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EFolder, EMaterialType, EOssType } from './material.enum';
 
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { PickType } from '@nestjs/swagger';
 import { BaseWithCreatorViewDto } from '@/core/dto/base.dto';
+import { EState } from '@/core/enums';
 // export type MaterialCreateDto = Pick<
 //   MaterialEntity,
 //   'type' | 'ossType' | 'path'
@@ -28,6 +29,11 @@ export class MaterialCreateDto {
   @IsString()
   @IsEnum(EFolder, { message: '素材存放位置错误' })
   folder: EFolder;
+
+  @IsNumber()
+  @Transform(({ value }) => value || EState.Disable)
+  @IsEnum(EState, { message: '请先设置state' })
+  state: EState;
 }
 
 export class MaterialViewDto extends PickType(BaseWithCreatorViewDto, [

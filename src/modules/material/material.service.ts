@@ -6,7 +6,8 @@ import { BaseDefaultRepository } from '@/core/repository/base.repository';
 import { MaterialEntity } from './material.entity';
 import { REQUEST } from '@nestjs/core';
 import { EMaterialType } from './material.enum';
-import { IPagination, IPaginationResult } from '@/types';
+import { IPagination, IPaginationResult, whereItem } from '@/types';
+import { EState } from '@/core/enums';
 @Injectable()
 export class MaterialService {
   private materialRepository: BaseDefaultRepository<MaterialEntity>;
@@ -41,6 +42,11 @@ export class MaterialService {
   async getList(
     pagination: IPagination,
   ): Promise<IPaginationResult<MaterialViewDto>> {
+    pagination.where = pagination.where || [];
+    (pagination.where as whereItem[]).push({
+      field: 'state',
+      value: EState.Normal,
+    });
     const result = (await this.materialRepository.paginateWithMapper(
       pagination,
     )) as IPaginationResult<MaterialViewDto>;
