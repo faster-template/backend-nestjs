@@ -93,8 +93,6 @@ export class UploadController {
       req.body['materialState'] && req.body['materialState'] !== false
         ? EState.Normal
         : EState.Disable;
-
-    console.log(req.body, req.body['materialState'], option.materialState);
     return option;
   }
 }

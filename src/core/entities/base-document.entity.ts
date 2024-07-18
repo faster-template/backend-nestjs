@@ -1,6 +1,7 @@
 import { BaseWithCreatorEntity } from '@/core/entities/base.entity';
 import { CategoryEntity } from '@/modules/category/category.entity';
 import { Column, JoinColumn, ManyToOne } from 'typeorm';
+import { EArticleContentMode } from '../enums';
 
 export class BaseDocumentEntity extends BaseWithCreatorEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
@@ -8,6 +9,9 @@ export class BaseDocumentEntity extends BaseWithCreatorEntity {
 
   @Column({ type: 'text', nullable: false })
   content: string;
+
+  @Column({ default: EArticleContentMode.RICHTEXT })
+  contentMode: EArticleContentMode;
 
   @Column({ type: 'int', nullable: false, default: 0 })
   views: number;

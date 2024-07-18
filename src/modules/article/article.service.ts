@@ -157,6 +157,7 @@ export class ArticleService {
           contentJson: JSON.stringify({
             title: article.title,
             content: article.content,
+            contentMode: article.contentMode,
           }),
         },
         queryRunner,

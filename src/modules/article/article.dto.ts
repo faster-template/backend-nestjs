@@ -2,9 +2,16 @@ import { BaseWithCreatorViewDto } from '@/core/dto/base.dto';
 import { DOMPurifyTransform } from '@/decorators/DOMPurify.transform.decorator';
 import { PartialType, PickType } from '@nestjs/swagger';
 import { Transform, Expose, Type } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 import { CategoryViewDto } from '../category/category.dto';
 import { UserInfoDto } from '../user/user.dto';
+import { EArticleContentMode } from '@/core/enums';
 
 export class ArticleCreateDto {
   @IsNotEmpty()
@@ -15,6 +22,10 @@ export class ArticleCreateDto {
   @IsNotEmpty()
   @Transform(DOMPurifyTransform())
   content: string;
+
+  @IsString()
+  @IsEnum(EArticleContentMode, { message: '素材类型错误' })
+  contentMode: EArticleContentMode;
 
   @IsNotEmpty()
   categoryId: string;
@@ -32,7 +43,8 @@ export class ArticleUpdateDto extends PartialType(ArticleCreateDto) {
 export class ArticleViewDto extends BaseWithCreatorViewDto {
   @Expose()
   content: string;
-
+  @Expose()
+  contentMode: EArticleContentMode;
   @Expose()
   title: string;
 

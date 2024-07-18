@@ -10,3 +10,8 @@ export enum EState {
   // 待审核
   Pending = 2,
 }
+
+export enum EArticleContentMode {
+  RICHTEXT = 'richtext',
+  MARKDOWN = 'markdown',
+}
