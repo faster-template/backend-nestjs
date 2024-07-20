@@ -27,6 +27,10 @@ export class ArticleCreateDto {
   @IsEnum(EArticleContentMode, { message: '素材类型错误' })
   contentMode: EArticleContentMode;
 
+  @IsString()
+  @IsOptional()
+  cover: string;
+
   @IsNotEmpty()
   categoryId: string;
   creatorId?: string;
@@ -43,8 +47,13 @@ export class ArticleUpdateDto extends PartialType(ArticleCreateDto) {
 export class ArticleViewDto extends BaseWithCreatorViewDto {
   @Expose()
   content: string;
+
   @Expose()
   contentMode: EArticleContentMode;
+
+  @Expose()
+  cover: string;
+
   @Expose()
   title: string;
 

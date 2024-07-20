@@ -15,6 +15,11 @@ export class CategoryEntity extends BaseTreeEntity<CategoryEntity> {
   key: string; // 用来标识分类的唯一值
 
   @Column({ type: 'varchar', length: 255, nullable: true })
+  icon: string; // icon图标
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  url: string; //跳转地址
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
 
   @TreeParent()

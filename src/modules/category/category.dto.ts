@@ -23,6 +23,14 @@ export class CategoryCreateDto {
   @IsString()
   description: string;
 
+  @IsString()
+  @IsOptional()
+  icon: string;
+
+  @IsString()
+  @IsOptional()
+  url: string;
+
   @IsOptional()
   @IsString()
   parentId?: string | null;
@@ -55,6 +63,13 @@ export class CategoryViewDto extends BaseTreeNodeViewDto {
   name: string;
   @Expose()
   key: string;
+
+  @Expose()
+  icon: string;
+
+  @Expose()
+  url: string;
+
   @Expose()
   description: string;
   @Expose()

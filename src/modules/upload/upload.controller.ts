@@ -74,7 +74,7 @@ export class UploadController {
         );
       }
       if (req.body['height']) {
-        option.resize.width = Math.max(
+        option.resize.height = Math.max(
           Math.min(parseInt(req.body['height'].value), 1080),
           100,
         );

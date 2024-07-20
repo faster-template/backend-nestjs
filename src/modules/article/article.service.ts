@@ -158,6 +158,7 @@ export class ArticleService {
             title: article.title,
             content: article.content,
             contentMode: article.contentMode,
+            cover: article.cover,
           }),
         },
         queryRunner,

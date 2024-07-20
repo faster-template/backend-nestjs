@@ -10,6 +10,9 @@ export class BaseDocumentEntity extends BaseWithCreatorEntity {
   @Column({ type: 'text', nullable: false })
   content: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  cover: string;
+
   @Column({ default: EArticleContentMode.RICHTEXT })
   contentMode: EArticleContentMode;
 
